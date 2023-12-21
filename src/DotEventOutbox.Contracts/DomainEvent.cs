@@ -3,11 +3,11 @@ namespace DotEventOutbox.Contracts;
 public abstract record DomainEvent : IEvent
 {
     public Guid Id { get; }
-    public DateTime OccurredOn { get; }
+    public DateTime OccurredOnUtc { get; }
 
     protected DomainEvent()
     {
         Id = Guid.NewGuid();
-        OccurredOn = DateTime.UtcNow;
+        OccurredOnUtc = DateTime.UtcNow;
     }
 }
