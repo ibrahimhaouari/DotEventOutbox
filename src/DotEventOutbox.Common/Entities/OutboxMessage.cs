@@ -1,4 +1,4 @@
-namespace DotEventOutbox.Entities;
+namespace DotEventOutbox.Common.Entities;
 
 /// <summary>
 /// Represents a message within the outbox.

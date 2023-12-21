@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using DotEventOutbox.Contracts;
 using DotEventOutbox.Entities;
 
-namespace DotEventOutbox.Infrastructure.EntityFramework;
+namespace DotEventOutbox;
 
 /// <summary>
 /// Service for converting domain events to outbox messages and persisting them in a database.

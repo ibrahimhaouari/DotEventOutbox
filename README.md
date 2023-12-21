@@ -1,44 +1,61 @@
-# DotEventOutbox
+# DotEventOutbox Library
 
 ## Overview
 
-`DotEventOutbox` is a .NET Core library designed to implement the Outbox Pattern effectively in distributed applications. It facilitates reliable event handling and dispatch, ensuring consistency and resilience in your microservices architecture.
+`DotEventOutbox` is a .NET library designed to facilitate robust and efficient handling of domain events using the Outbox Pattern. It provides a suite of tools and services to ensure reliable and scalable event processing, particularly in distributed systems or microservices architectures.
 
-## Key Features
+## Features
 
-- **Domain Event Management**: Streamlines the handling and dispatching of domain events.
-- **Scalable and Robust**: Engineered for high scalability and robustness in production environments.
-- **Clean Architecture**: Built following Clean Architecture principles for maintainability and extensibility.
-- **Configurable**: Offers flexible configuration to adapt to various application needs.
-
-## Components
-
-- `DotEventOutbox.Contracts`: Interfaces and contracts defining core functionalities.
-- `DotEventOutbox.Entities`: Domain models and entities specific to the Outbox Pattern.
-- `DotEventOutbox.Infrastructure`: Implementation details including database interactions and background processing.
+- **Domain Event Handling**: Define and handle domain events in your application.
+- **Outbox Pattern Implementation**: Reliably handle event dispatch to ensure consistency and fault tolerance.
+- **Idempotent Processing**: Ensure each event is processed only once.
+- **Configurable and Extendable**: Tailor the library to fit the specific needs of your application.
 
 ## Getting Started
 
-(TODO: Provide instructions on how to get the project, install dependencies, and set up.)
+### Installation
 
-## Usage
+You can install the `DotEventOutbox` library via NuGet package manager. Run the following command:
 
-(TODO: Instructions and examples of how to use this library in an application.)
+```bash
+dotnet add package DotEventOutbox
+```
+
+### Basic Setup
+
+1. **Configure Services**: Add `DotEventOutbox` to your service collection in the `Startup.cs` or wherever you configure services.
+
+   ```csharp
+   public void ConfigureServices(IServiceCollection services)
+   {
+   services.AddOutbox(Configuration, options =>
+   options.UseSqlServer(Configuration.GetConnectionString("YourConnectionString")));
+   }
+   ```
+
+2. **Applying Migrations**: Apply migrations to set up the necessary database tables.
+   - For development, you can apply migrations automatically during application startup.
+   - For production, it's recommended to apply migrations manually or as part of your CI/CD pipeline.
+
+### Usage
+
+- Define domain events implementing `IEvent`.
+- Implement `IDomainEventEmitter` in your entities.
+- Use `OutboxMessageProcessingJob` for processing and dispatching events.
+
+## Advanced Configuration
+
+- Customize the `OutboxMessage` entity configurations as needed.
+- Configure Quartz jobs for event processing schedules.
 
 ## Contributing
 
-Contributions are welcome! Feel free to submit pull requests, open issues for bugs and feature requests, or provide documentation updates.
+Contributions are welcome! If you have a feature request, bug report, or pull request, please open an issue or submit a pull request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE.md).
 
 ## Acknowledgements
 
-(TODO: Acknowledge any contributors, inspirations, or significant dependencies.)
-
----
-
-### Note:
-
-This README is a work in progress and will be updated with more detailed information as the project evolves.
+Special thanks to the contributors and users of `DotEventOutbox`. Your feedback and support are greatly appreciated!

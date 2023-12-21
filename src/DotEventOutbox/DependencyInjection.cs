@@ -1,4 +1,4 @@
-using DotEventOutbox.Infrastructure.Common.Configuration;
+using DotEventOutbox.Common.Configuration;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Quartz;
 
-namespace DotEventOutbox.Infrastructure.EntityFramework;
+namespace DotEventOutbox;
 
 public static class DependencyInjection
 {

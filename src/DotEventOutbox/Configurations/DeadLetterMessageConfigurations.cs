@@ -2,7 +2,7 @@ using DotEventOutbox.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DotEventOutbox.Infrastructure.EntityFramework.Configurations;
+namespace DotEventOutbox.Configurations;
 internal sealed class DeadLetterMessageConfigurations : IEntityTypeConfiguration<DeadLetterMessage>
 {
     public void Configure(EntityTypeBuilder<DeadLetterMessage> builder)

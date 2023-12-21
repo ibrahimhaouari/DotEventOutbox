@@ -1,4 +1,4 @@
-namespace DotEventOutbox.Infrastructure.Common.Configuration;
+namespace DotEventOutbox.Common.Configuration;
 
 /// <summary>
 /// Represents the configuration settings for the DotEventOutbox.

@@ -6,6 +6,24 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>DotEventOutbox</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Ibrahim Haouari</Authors>
+    <PackageIcon>icon-square.png</PackageIcon>
+    <PackageTags>Outbox,DDD,MediatR,Events</PackageTags>
+    <Description>A simple, fluent discriminated union of an error or a result.</Description>
+    <PackageProjectUrl>https://github.com/ibrahimhaouari/DotEventOutbox</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <licenses>https://opensource.org/licenses/MIT</licenses>
+    <RepositoryUrl>https://github.com/ibrahimhaouari/DotEventOutbox</RepositoryUrl>
+    <PackageOutputPath>../artifacts/</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../assets/icon.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
@@ -20,8 +38,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DotEventOutbox.Contracts\DotEventOutbox.Contracts.csproj" />
-    <ProjectReference Include="..\DotEventOutbox.Entities\DotEventOutbox.Entities.csproj" />
-    <ProjectReference Include="..\DotEventOutbox.Infrastructure.Common\DotEventOutbox.Infrastructure.Common.csproj" />
+    <ProjectReference Include="..\DotEventOutbox.Common\DotEventOutbox.Common.csproj" />
   </ItemGroup>
 
 </Project>

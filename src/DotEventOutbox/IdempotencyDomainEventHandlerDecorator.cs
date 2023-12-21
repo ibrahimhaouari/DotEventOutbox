@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using DotEventOutbox.Entities;
 using DotEventOutbox.Contracts;
 
-namespace DotEventOutbox.Infrastructure.EntityFramework;
+namespace DotEventOutbox;
 
 /// <summary>
 /// Decorator for domain event handlers to ensure idempotent processing of events.

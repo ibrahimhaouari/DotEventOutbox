@@ -5,11 +5,11 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Polly;
 using Quartz;
-using DotEventOutbox.Entities;
 using DotEventOutbox.Contracts;
-using DotEventOutbox.Infrastructure.Common.Configuration;
+using DotEventOutbox.Common.Configuration;
+using DotEventOutbox.Common.Entities;
 
-namespace DotEventOutbox.Infrastructure.EntityFramework;
+namespace DotEventOutbox;
 
 /// <summary>
 /// Quartz job for processing messages stored in the outbox.
