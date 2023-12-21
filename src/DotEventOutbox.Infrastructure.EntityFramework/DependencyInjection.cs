@@ -1,5 +1,4 @@
 using DotEventOutbox.Infrastructure.Common.Configuration;
-using DotEventOutbox.Infrastructure.EntityFramework;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Quartz;
 
-namespace inteliQo.Outbox.Infrastructure.EntityFramework;
+namespace DotEventOutbox.Infrastructure.EntityFramework;
 
 /// <summary>
 /// Extension methods for configuring outbox-related services.
@@ -97,7 +96,10 @@ public static class DependencyInjection
     // Decorate INotificationHandler with IdempotentDomainEventHandler
     private static IServiceCollection DecorateNotificationHandlers(this IServiceCollection services)
     {
-        services.Decorate(typeof(INotificationHandler<>), typeof(IdempotencyDomainEventHandlerDecorator<>));
+        if (services.Any(x => x.ServiceType == typeof(INotificationHandler<>)))
+        {
+            services.Decorate(typeof(INotificationHandler<>), typeof(IdempotencyDomainEventHandlerDecorator<>));
+        }
         return services;
     }
 }

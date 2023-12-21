@@ -16,3 +16,4 @@ public static class DatabaseInitializer
         context.Database.Migrate();
     }
 }
+
