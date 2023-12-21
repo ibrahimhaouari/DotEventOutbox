@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotEventOutbox.Entities", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotEventOutbox.Infrastructure.Common", "src\DotEventOutbox.Infrastructure.Common\DotEventOutbox.Infrastructure.Common.csproj", "{C4B467BB-9DA2-4A52-8294-CF384FA7D7AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotEventOutbox.Infrastructure.EntityFramework", "src\DotEventOutbox.Infrastructure.EntityFramework\DotEventOutbox.Infrastructure.EntityFramework.csproj", "{8EE56319-4E78-4C32-BA0E-AC709C3ECED9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,10 +34,15 @@ Global
 		{C4B467BB-9DA2-4A52-8294-CF384FA7D7AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4B467BB-9DA2-4A52-8294-CF384FA7D7AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4B467BB-9DA2-4A52-8294-CF384FA7D7AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EE56319-4E78-4C32-BA0E-AC709C3ECED9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EE56319-4E78-4C32-BA0E-AC709C3ECED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EE56319-4E78-4C32-BA0E-AC709C3ECED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EE56319-4E78-4C32-BA0E-AC709C3ECED9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{36676A25-1E8F-407A-BDC9-FB654596F249} = {9C5302DF-FF1F-4CDB-A30E-30742B3F9DE7}
 		{897E9B1A-8D6A-4760-9AAA-2BD2EF536FD9} = {9C5302DF-FF1F-4CDB-A30E-30742B3F9DE7}
 		{C4B467BB-9DA2-4A52-8294-CF384FA7D7AD} = {9C5302DF-FF1F-4CDB-A30E-30742B3F9DE7}
+		{8EE56319-4E78-4C32-BA0E-AC709C3ECED9} = {9C5302DF-FF1F-4CDB-A30E-30742B3F9DE7}
 	EndGlobalSection
 EndGlobal
