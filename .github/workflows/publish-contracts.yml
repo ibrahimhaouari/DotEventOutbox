@@ -1,0 +1,37 @@
+name: publish contracts to nuget
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main # Default release branch
+    paths:
+      - "src/DotEventOutbox.Contracts/**"
+
+jobs:
+  publish:
+    name: build, pack & publish
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '8.0.100'
+
+      # Restore dependencies and build project
+      - name: Restore and Build
+        run: |
+          dotnet restore src/DotEventOutbox.Contracts/DotEventOutbox.Contracts.csproj
+          dotnet build src/DotEventOutbox.Contracts/DotEventOutbox.Contracts.csproj --no-restore
+
+      # Run tests
+
+      # Package
+      - name: Package
+        run: dotnet pack src/DotEventOutbox.Contracts/DotEventOutbox.Contracts.csproj --no-build
+
+      # Publish
+      - name: Publish
+        run: dotnet nuget push ./artifacts/DotEventOutbox.Contracts.*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
