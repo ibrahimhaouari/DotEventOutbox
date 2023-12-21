@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace DotEventOutbox;
+namespace DotEventOutbox.Persistence;
 
 /// <summary>
 /// Entity Framework DbContext for managing outbox-related entities.

@@ -3,8 +3,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using DotEventOutbox.Entities;
 using DotEventOutbox.Contracts;
+using DotEventOutbox.Common.Entities;
+using DotEventOutbox.Persistence;
 
 namespace DotEventOutbox;
 

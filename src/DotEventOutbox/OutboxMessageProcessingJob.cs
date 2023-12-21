@@ -8,6 +8,7 @@ using Quartz;
 using DotEventOutbox.Contracts;
 using DotEventOutbox.Common.Configuration;
 using DotEventOutbox.Common.Entities;
+using DotEventOutbox.Persistence;
 
 namespace DotEventOutbox;
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DotEventOutbox.Infrastructure.EntityFramework.Migrations
+namespace DotEventOutbox.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration

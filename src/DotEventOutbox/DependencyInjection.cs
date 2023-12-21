@@ -1,4 +1,5 @@
 using DotEventOutbox.Common.Configuration;
+using DotEventOutbox.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

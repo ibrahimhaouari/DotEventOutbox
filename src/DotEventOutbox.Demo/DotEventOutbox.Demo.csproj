@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DotEventOutbox.Infrastructure.EntityFramework\DotEventOutbox.Infrastructure.EntityFramework.csproj" />
+    <ProjectReference Include="..\DotEventOutbox\DotEventOutbox.csproj" />
   </ItemGroup>
 
   <ItemGroup>
