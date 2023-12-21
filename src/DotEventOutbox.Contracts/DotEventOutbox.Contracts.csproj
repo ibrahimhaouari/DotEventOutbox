@@ -6,6 +6,27 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>DotEventOutbox.Contracts</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Ibrahim Haouari</Authors>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageTags>Outbox,DDD,MediatR,Events</PackageTags>
+    <Description>Contracts package for domain events and emitters</Description>
+    <PackageProjectUrl>https://github.com/ibrahimhaouari/DotEventOutbox/tree/main/src/DotEventOutbox.Contracts</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/ibrahimhaouari/DotEventOutbox</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RootNamespace>DotEventOutbox</RootNamespace>
+    <PackageOutputPath>../../artifacts/</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../assets/icon.png" Pack="true" Visible="false" PackagePath="" />
+    <None Include="README.md" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
   </ItemGroup>

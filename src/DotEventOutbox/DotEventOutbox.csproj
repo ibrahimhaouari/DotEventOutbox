@@ -10,18 +10,20 @@
     <PackageId>DotEventOutbox</PackageId>
     <Version>1.0.0</Version>
     <Authors>Ibrahim Haouari</Authors>
-    <PackageIcon>icon-square.png</PackageIcon>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>Outbox,DDD,MediatR,Events</PackageTags>
-    <Description>A simple, fluent discriminated union of an error or a result.</Description>
+    <Description>Designed to facilitate robust and efficient handling of domain events using the Outbox Pattern</Description>
     <PackageProjectUrl>https://github.com/ibrahimhaouari/DotEventOutbox</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
-    <licenses>https://opensource.org/licenses/MIT</licenses>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/ibrahimhaouari/DotEventOutbox</RepositoryUrl>
-    <PackageOutputPath>../artifacts/</PackageOutputPath>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageOutputPath>../../artifacts/</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="../../assets/icon.png" Pack="true" Visible="false" PackagePath="" />
+    <None Include="../../README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <ItemGroup>
