@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DotEventOutbox.Infrastructure.EntityFramework.Configurations;
-public sealed class DeadLetterMessageConfigurations : IEntityTypeConfiguration<DeadLetterMessage>
+internal sealed class DeadLetterMessageConfigurations : IEntityTypeConfiguration<DeadLetterMessage>
 {
     public void Configure(EntityTypeBuilder<DeadLetterMessage> builder)
     {

@@ -12,25 +12,26 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddOutbox(this IServiceCollection services,
         IConfiguration configuration,
-        Action<DbContextOptionsBuilder> optionsAction)
+        Action<DbContextOptionsBuilder> optionsAction,
+        string? schemaName = null)
     {
         // Configure Outbox settings and get the instance of the settings
         var outboxSettings = services.ConfigureOutboxSettings(configuration);
 
+        // Configure SchemaName
+        OutboxDbContext.SchemaName = schemaName;
+
         // Add OutboxDbContext to the services
         services.AddOutboxDbContext(optionsAction)
-                // Add DomainEventsToOutboxMessagesConverter to the services
-                .AddDomainEventsConverter()
+                // Add AddOutboxCommitProcessor to the services
+                .AddOutboxCommitProcessor()
                 // Configure Quartz with the outboxSettings
                 .ConfigureQuartz(outboxSettings)
                 // Decorate INotificationHandler
                 .DecorateNotificationHandlers();
 
-        // Apply migrations
-        using var serviceProvider = services.BuildServiceProvider();
-        using var scope = serviceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<OutboxDbContext>();
-        DatabaseInitializer.ApplyMigrations(dbContext);
+        // apply migrations
+        DatabaseInitializer.ApplyMigrations(services.BuildServiceProvider());
 
         return services;
     }
@@ -52,9 +53,9 @@ public static class DependencyInjection
     }
 
     // Add DomainEventsToOutboxMessagesConverter to the services
-    private static IServiceCollection AddDomainEventsConverter(this IServiceCollection services)
+    private static IServiceCollection AddOutboxCommitProcessor(this IServiceCollection services)
     {
-        services.AddScoped<EventsToOutboxMessagesConverter>();
+        services.AddScoped<OutboxCommitProcessor>();
         return services;
     }
 

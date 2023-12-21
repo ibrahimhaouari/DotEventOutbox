@@ -11,9 +11,11 @@ using var host = Host.CreateDefaultBuilder()
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
+        string schemaName = "Outbox";
         services.AddOutbox(configuration,
         options => options.UseNpgsql(configuration.GetConnectionString("AppDb"),
-                o => o.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "Outbox")));
+                o => o.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schemaName)),
+                schemaName);
     }).Build();
 
 

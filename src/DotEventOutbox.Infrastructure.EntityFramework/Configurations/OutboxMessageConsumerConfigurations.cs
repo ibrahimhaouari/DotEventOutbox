@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DotEventOutbox.Infrastructure.EntityFramework.Configurations;
-public sealed class OutboxMessageConsumerConfigurations : IEntityTypeConfiguration<OutboxMessagesConsumer>
+internal sealed class OutboxMessageConsumerConfigurations : IEntityTypeConfiguration<OutboxMessagesConsumer>
 {
     public void Configure(EntityTypeBuilder<OutboxMessagesConsumer> builder)
     {

@@ -11,22 +11,25 @@ using DotEventOutbox.Infrastructure.Common.Configuration;
 
 namespace DotEventOutbox.Infrastructure.EntityFramework;
 
-// Prevent multiple instances of the job from running concurrently
+/// <summary>
+/// Quartz job for processing messages stored in the outbox.
+/// This job handles the retrieval, deserialization, and publishing of domain events,
+/// as well as moving failed messages to a dead letter queue.
+/// </summary>
 [DisallowConcurrentExecution]
-public class OutboxMessageProcessingJob(
+internal class OutboxMessageProcessingJob(
     OutboxDbContext dbContext,
     IPublisher publisher,
     IOptions<EventOutboxConfiguration> options,
     ILogger<OutboxMessageProcessingJob> logger) : IJob
 {
-    private readonly OutboxDbContext dbContext = dbContext;
-    private readonly IPublisher publisher = publisher;
-    private readonly EventOutboxConfiguration configuration = options.Value;
-    private readonly ILogger<OutboxMessageProcessingJob> logger = logger;
+    private readonly OutboxDbContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    private readonly IPublisher publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
+    private readonly EventOutboxConfiguration configuration = options?.Value ?? throw new ArgumentNullException(nameof(options));
+    private readonly ILogger<OutboxMessageProcessingJob> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task Execute(IJobExecutionContext context)
     {
-        // Fetch pending outbox messages ordered by their occurrence time
         var messages = await dbContext.Set<OutboxMessage>()
             .TagWith("GetPendingOutboxMessages")
             .Where(m => m.ProcessedOnUtc == null)
@@ -40,18 +43,17 @@ public class OutboxMessageProcessingJob(
             {
                 logger.LogInformation("Processing outbox message with ID {Id}.", message.Id);
 
-                // Deserialize the message content into an event
-                var @event = JsonConvert.DeserializeObject<DomainEvent>(message.Content, new JsonSerializerSettings
+                var @event = JsonConvert.DeserializeObject<IEvent>(message.Content, new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.All,
                 }) ?? throw new InvalidOperationException("Deserialized event is null.");
 
-                // Create a retry policy and attempt to publish the event
                 var retryPolicy = Policy.Handle<Exception>()
-                    .WaitAndRetryAsync(configuration.MaxRetryAttempts, retryAttempt => TimeSpan.FromMilliseconds(retryAttempt * configuration.RetryIntervalInMilliseconds));
+                    .WaitAndRetryAsync(configuration.MaxRetryAttempts, retryAttempt =>
+                        TimeSpan.FromMilliseconds(retryAttempt * configuration.RetryIntervalInMilliseconds));
 
                 var result = await retryPolicy.ExecuteAndCaptureAsync(async () =>
-                 await publisher.Publish(@event, context.CancellationToken));
+                    await publisher.Publish(@event, context.CancellationToken));
 
                 if (result.Outcome == OutcomeType.Failure)
                 {
@@ -60,15 +62,12 @@ public class OutboxMessageProcessingJob(
 
                 logger.LogInformation("Outbox message with ID {Id} processed successfully.", message.Id);
 
-                // Mark the message as processed
                 message.ProcessedOnUtc = DateTime.UtcNow;
             }
             catch (Exception e)
             {
-                // Log error (to be implemented)
                 logger.LogError(e, "Failed to process outbox message with ID {Id}.", message.Id);
 
-                // Move the failed message to the dead letter queue
                 var deadLetterMessage = new DeadLetterMessage
                 {
                     Id = message.Id,
@@ -85,7 +84,6 @@ public class OutboxMessageProcessingJob(
             }
         }
 
-        // Save changes to the database
         await dbContext.SaveChangesAsync(context.CancellationToken);
     }
 }
