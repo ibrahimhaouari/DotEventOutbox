@@ -8,20 +8,11 @@ using Quartz;
 
 namespace DotEventOutbox.Infrastructure.EntityFramework;
 
-/// <summary>
-/// Extension methods for configuring outbox-related services.
-/// </summary>
 public static class DependencyInjection
 {
-    /// <summary>
-    /// Adds the outbox services to the service collection.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
-    /// <param name="configuration">The configuration.</param>
-    /// <param name="optionsAction">An action to configure the database context options.</param>
-    /// <param name="autoMigrate">Specifies whether to automatically apply database migrations on startup.</param>
-    /// <returns>The modified <see cref="IServiceCollection"/>.</returns>
-    public static IServiceCollection AddOutbox(this IServiceCollection services, IConfiguration configuration, Action<DbContextOptionsBuilder> optionsAction, bool autoMigrate = false)
+    public static IServiceCollection AddOutbox(this IServiceCollection services,
+        IConfiguration configuration,
+        Action<DbContextOptionsBuilder> optionsAction)
     {
         // Configure Outbox settings and get the instance of the settings
         var outboxSettings = services.ConfigureOutboxSettings(configuration);
@@ -35,15 +26,11 @@ public static class DependencyInjection
                 // Decorate INotificationHandler
                 .DecorateNotificationHandlers();
 
-
-        // Migrate database on startup
-        if (autoMigrate)
-        {
-            using var serviceProvider = services.BuildServiceProvider();
-            using var scope = serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<OutboxDbContext>();
-            DatabaseInitializer.ApplyMigrations(dbContext);
-        }
+        // Apply migrations
+        using var serviceProvider = services.BuildServiceProvider();
+        using var scope = serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<OutboxDbContext>();
+        DatabaseInitializer.ApplyMigrations(dbContext);
 
         return services;
     }

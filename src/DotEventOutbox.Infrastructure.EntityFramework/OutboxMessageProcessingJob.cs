@@ -28,6 +28,7 @@ public class OutboxMessageProcessingJob(
     {
         // Fetch pending outbox messages ordered by their occurrence time
         var messages = await dbContext.Set<OutboxMessage>()
+            .TagWith("GetPendingOutboxMessages")
             .Where(m => m.ProcessedOnUtc == null)
             .OrderBy(m => m.OccurredOnUtc)
             .Take(configuration.MaxMessagesProcessedPerBatch)

@@ -13,5 +13,7 @@ public sealed class OutboxMessageConfigurations : IEntityTypeConfiguration<Outbo
         builder.Property(e => e.Type).IsRequired().HasMaxLength(200);
         builder.Property(e => e.Content).IsRequired();
         builder.Property(e => e.OccurredOnUtc).IsRequired();
+
+        builder.HasIndex(e => e.ProcessedOnUtc);
     }
 }

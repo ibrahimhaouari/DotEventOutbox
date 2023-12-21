@@ -9,23 +9,10 @@ namespace DotEventOutbox.Infrastructure.EntityFramework;
 /// <summary>
 /// Service for converting domain events to outbox messages.
 /// </summary>
-public class EventsToOutboxMessagesConverter
+public class EventsToOutboxMessagesConverter(OutboxDbContext outboxDbContext)
 {
-    private readonly OutboxDbContext _outboxDbContext;
+    private readonly OutboxDbContext outboxDbContext = outboxDbContext;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EventsToOutboxMessagesConverter"/> class.
-    /// </summary>
-    /// <param name="outboxDbContext">The outbox database context.</param>
-    public EventsToOutboxMessagesConverter(OutboxDbContext outboxDbContext)
-    {
-        _outboxDbContext = outboxDbContext;
-    }
-
-    /// <summary>
-    /// Converts the domain events of entities being tracked by the given application database context to outbox messages.
-    /// </summary>
-    /// <param name="dbContext">The application database context tracking the entities.</param>
     public void Convert(DbContext dbContext)
     {
         // Get the entities with domain events from the change tracker.
@@ -54,6 +41,6 @@ public class EventsToOutboxMessagesConverter
             .ToList();
 
         // Add the outbox messages to the outbox database context.
-        _outboxDbContext.Set<OutboxMessage>().AddRange(outboxMessages);
+        outboxDbContext.Set<OutboxMessage>().AddRange(outboxMessages);
     }
 }
