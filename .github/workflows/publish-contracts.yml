@@ -11,7 +11,7 @@ on:
 jobs:
   publish:
     name: build, pack & publish
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
