@@ -26,11 +26,11 @@ dotnet add package DotEventOutbox
 1. **Configure Services**: Add `DotEventOutbox` to your service collection in the `Startup.cs` or wherever you configure services.
 
    ```csharp
-   public void ConfigureServices(IServiceCollection services)
-   {
-   services.AddOutbox(Configuration, options =>
-   options.UseSqlServer(Configuration.GetConnectionString("YourConnectionString")));
-   }
+   string schemaName = "Outbox";
+        services.AddOutbox(configuration,
+        options => options.UseNpgsql(configuration.GetConnectionString("AppDb"),
+                o => o.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schemaName)),
+                schemaName);
    ```
 
 2. **Applying Migrations**: Apply migrations to set up the necessary database tables.
