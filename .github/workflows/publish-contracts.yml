@@ -32,6 +32,10 @@ jobs:
       - name: Package
         run: dotnet pack src/DotEventOutbox.Contracts/DotEventOutbox.Contracts.csproj --no-build -o ./artifacts
 
+      # List contents of the artifacts directory
+      - name: List Artifacts
+        run: ls ./artifacts
+
       # Publish
       - name: Publish
         run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
