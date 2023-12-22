@@ -18,13 +18,13 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.0.100'
+          dotnet-version: "8.0.100"
 
       # Restore dependencies and build project
       - name: Restore and Build
         run: |
           dotnet restore src/DotEventOutbox.Contracts/DotEventOutbox.Contracts.csproj
-          dotnet build src/DotEventOutbox.Contracts/DotEventOutbox.Contracts.csproj --no-restore
+          dotnet build src/DotEventOutbox.Contracts/DotEventOutbox.Contracts.csproj --no-restore --configuration Release
 
       # Run tests
 
