@@ -19,7 +19,6 @@
     <RepositoryUrl>https://github.com/ibrahimhaouari/DotEventOutbox</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RootNamespace>DotEventOutbox</RootNamespace>
-    <PackageOutputPath>../../artifacts/</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

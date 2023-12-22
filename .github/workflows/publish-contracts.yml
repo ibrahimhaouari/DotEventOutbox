@@ -30,7 +30,7 @@ jobs:
 
       # Package
       - name: Package
-        run: dotnet pack src/DotEventOutbox.Contracts/DotEventOutbox.Contracts.csproj --no-build -o ../../artifacts
+        run: dotnet pack src/DotEventOutbox.Contracts/DotEventOutbox.Contracts.csproj --no-build -o ./artifacts
 
       # Publish
       - name: Publish
