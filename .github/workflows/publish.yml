@@ -1,4 +1,4 @@
-name: publish contracts to nuget
+name: publish to nuget
 
 on:
   workflow_dispatch:

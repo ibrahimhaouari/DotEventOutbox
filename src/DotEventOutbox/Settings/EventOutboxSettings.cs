@@ -1,9 +1,9 @@
-namespace DotEventOutbox.Common.Configuration;
+namespace DotEventOutbox.Settings;
 
 /// <summary>
-/// Represents the configuration settings for the DotEventOutbox.
+/// Represents the settings for the DotEventOutbox.
 /// </summary>
-public class EventOutboxConfiguration
+public class EventOutboxSettings
 {
     /// <summary>
     /// The configuration section name in the application configuration file.

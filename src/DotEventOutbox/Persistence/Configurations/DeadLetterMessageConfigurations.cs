@@ -1,4 +1,4 @@
-using DotEventOutbox.Common.Entities;
+using DotEventOutbox.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

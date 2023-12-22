@@ -3,8 +3,8 @@ using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using DotEventOutbox.Contracts;
-using DotEventOutbox.Common.Entities;
 using DotEventOutbox.Persistence;
+using DotEventOutbox.Entities;
 
 namespace DotEventOutbox;
 

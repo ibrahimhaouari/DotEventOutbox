@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>DotEventOutbox</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>Ibrahim Haouari</Authors>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>Outbox,DDD,MediatR,Events</PackageTags>
@@ -36,10 +36,6 @@
     <PackageReference Include="Quartz" Version="3.8.0" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.0" />
     <PackageReference Include="Scrutor" Version="4.2.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DotEventOutbox.Common\DotEventOutbox.Common.csproj" />
   </ItemGroup>
 
 </Project>

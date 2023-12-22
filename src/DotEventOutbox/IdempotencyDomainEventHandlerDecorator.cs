@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using DotEventOutbox.Contracts;
-using DotEventOutbox.Common.Entities;
 using DotEventOutbox.Persistence;
+using DotEventOutbox.Entities;
 
 namespace DotEventOutbox;
 

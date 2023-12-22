@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 using Polly;
 using Quartz;
 using DotEventOutbox.Contracts;
-using DotEventOutbox.Common.Configuration;
-using DotEventOutbox.Common.Entities;
 using DotEventOutbox.Persistence;
+using DotEventOutbox.Settings;
+using DotEventOutbox.Entities;
 
 namespace DotEventOutbox;
 
@@ -21,12 +21,12 @@ namespace DotEventOutbox;
 internal class OutboxMessageProcessingJob(
     OutboxDbContext dbContext,
     IPublisher publisher,
-    IOptions<EventOutboxConfiguration> options,
+    IOptions<EventOutboxSettings> options,
     ILogger<OutboxMessageProcessingJob> logger) : IJob
 {
     private readonly OutboxDbContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     private readonly IPublisher publisher = publisher ?? throw new ArgumentNullException(nameof(publisher));
-    private readonly EventOutboxConfiguration configuration = options?.Value ?? throw new ArgumentNullException(nameof(options));
+    private readonly EventOutboxSettings configuration = options?.Value ?? throw new ArgumentNullException(nameof(options));
     private readonly ILogger<OutboxMessageProcessingJob> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task Execute(IJobExecutionContext context)

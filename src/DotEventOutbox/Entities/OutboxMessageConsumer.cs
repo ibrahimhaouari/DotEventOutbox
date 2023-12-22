@@ -1,4 +1,4 @@
-namespace DotEventOutbox.Common.Entities;
+namespace DotEventOutbox.Entities;
 
 /// <summary>
 /// Represents a consumer of outbox messages. This entity typically identifies

@@ -1,5 +1,5 @@
-using DotEventOutbox.Common.Configuration;
 using DotEventOutbox.Persistence;
+using DotEventOutbox.Settings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -45,10 +45,10 @@ public static class DependencyInjection
     }
 
     // Configure and add OutboxSettings to the services
-    private static EventOutboxConfiguration ConfigureOutboxSettings(this IServiceCollection services, IConfiguration configuration)
+    private static EventOutboxSettings ConfigureOutboxSettings(this IServiceCollection services, IConfiguration configuration)
     {
-        var eventOutboxConfiguration = new EventOutboxConfiguration();
-        configuration.Bind(EventOutboxConfiguration.SectionName, eventOutboxConfiguration);
+        var eventOutboxConfiguration = new EventOutboxSettings();
+        configuration.Bind(EventOutboxSettings.SectionName, eventOutboxConfiguration);
         services.AddSingleton(Options.Create(eventOutboxConfiguration));
         return eventOutboxConfiguration;
     }
@@ -61,7 +61,7 @@ public static class DependencyInjection
     }
 
     // Configure Quartz services
-    private static IServiceCollection ConfigureQuartz(this IServiceCollection services, EventOutboxConfiguration configuration)
+    private static IServiceCollection ConfigureQuartz(this IServiceCollection services, EventOutboxSettings configuration)
     {
         services.AddQuartz(config =>
         {

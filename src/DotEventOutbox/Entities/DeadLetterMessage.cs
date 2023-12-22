@@ -1,4 +1,4 @@
-namespace DotEventOutbox.Common.Entities;
+namespace DotEventOutbox.Entities;
 
 /// <summary>
 /// Represents a dead letter message in the outbox pattern.
