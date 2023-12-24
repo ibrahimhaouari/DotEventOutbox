@@ -26,7 +26,6 @@ var host = Host.CreateDefaultBuilder()
 
     // Schema name for the outbox tables
     string schemaName = "Outbox";
-
     // Register DotEventOutbox services with the specified schema name for outbox tables
     services.AddDotEventOutbox(configuration,
         options => options.UseNpgsql(configuration.GetConnectionString("AppDb"),
