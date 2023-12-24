@@ -28,11 +28,11 @@ jobs:
 
       # Restore dependencies
       - name: Restore Dependencies
-        run: dotnet restore ${{ env.PROJECT_PATH }}
+        run: dotnet restore
 
       # Build project
       - name: Build Project
-        run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+        run: dotnet build --no-restore --configuration Release
 
       # Run tests
       - name: Run Tests
