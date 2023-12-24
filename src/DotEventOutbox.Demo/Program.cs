@@ -24,13 +24,10 @@ var host = Host.CreateDefaultBuilder()
     // Register domain event handlers using MediatR
     services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-    // Schema name for the outbox tables
-    string schemaName = "Outbox";
-    // Register DotEventOutbox services with the specified schema name for outbox tables
+
+    // Register DotEventOutbox services
     services.AddDotEventOutbox(configuration,
-        options => options.UseNpgsql(configuration.GetConnectionString("AppDb"),
-            o => o.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schemaName)),
-            schemaName);
+        options => options.UseNpgsql(configuration.GetConnectionString("AppDb")));
 
 }).Build();
 

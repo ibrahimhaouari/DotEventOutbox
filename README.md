@@ -46,8 +46,8 @@ This package is useful in scenarios where your DotEventOutbox contracts are in a
 DotEventOutbox supports `Microsoft.Extensions.DependencyInjection.Abstractions` directly. To register various DotEventOutbox services:
 
 ```csharp
-services.AddDotEventOutbox(Configuration, options =>
-    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+services.AddDotEventOutbox(configuration,
+  options => options.UseNpgsql(configuration.GetConnectionString("AppDb")));
 ```
 
 ## Configuration
