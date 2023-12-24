@@ -1,19 +1,22 @@
 namespace DotEventOutbox.Entities;
 
 /// <summary>
-/// Represents a consumer of outbox messages. This entity typically identifies
-/// a system or process that consumes messages stored in the outbox.
+/// Represents a consumer of outbox messages. This entity is essential for identifying
+/// different systems or processes that consume messages from the outbox. It facilitates
+/// the tracking and management of message consumption across various consumers.
 /// </summary>
-public sealed class OutboxMessagesConsumer
+public sealed class OutboxMessageConsumer
 {
     /// <summary>
-    /// Gets or sets the unique identifier of the outbox messages consumer.
+    /// Unique identifier for the outbox message consumer. This GUID is crucial for uniquely identifying
+    /// and differentiating between multiple consumers in the system.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Gets or sets the name of the outbox messages consumer.
-    /// This name usually represents the identity of the system or service consuming the messages.
+    /// Name representing the identity of the consumer. This could be the name of a system, service, or
+    /// any logical entity that processes the outbox messages. Naming helps in easier identification and
+    /// management of consumers.
     /// </summary>
     public string Name { get; set; } = string.Empty;
 }

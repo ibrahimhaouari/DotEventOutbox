@@ -9,23 +9,23 @@ using DotEventOutbox.Entities;
 namespace DotEventOutbox;
 
 /// <summary>
-/// Service for converting domain events to outbox messages and persisting them in a database.
+/// Internal service for processing and saving domain events as outbox messages in the database.
 /// </summary>
 /// <remarks>
 /// Initializes a new instance of the <see cref="OutboxCommitProcessor"/> class.
 /// </remarks>
-/// <param name="outboxDbContext">The database context for the outbox.</param>
-public class OutboxCommitProcessor(OutboxDbContext outboxDbContext)
+/// <param name="outboxDbContext">Database context for the outbox.</param>
+/// <exception cref="ArgumentNullException">Thrown if <paramref name="outboxDbContext"/> is null.</exception>
+internal sealed class OutboxCommitProcessor(OutboxDbContext outboxDbContext) : IOutboxCommitProcessor
 {
     private readonly OutboxDbContext outboxDbContext = outboxDbContext ?? throw new ArgumentNullException(nameof(outboxDbContext));
 
     /// <summary>
-    /// Processes domain events from the specified <paramref name="dbContext"/>, converts them to outbox messages,
-    /// and saves them to the database.
+    /// Processes and saves domain events from the specified <paramref name="dbContext"/> as outbox messages.
     /// </summary>
-    /// <param name="dbContext">The DbContext from which to extract and process domain events.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task that represents the asynchronous save operation.</returns>
+    /// <param name="dbContext">The DbContext to extract and process domain events from.</param>
+    /// <param name="cancellationToken">Cancellation token for the operation.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task ProcessAndSaveAsync(DbContext dbContext, CancellationToken cancellationToken = default)
     {
         ConvertDomainEventsToOutboxMessages(dbContext);
@@ -37,9 +37,10 @@ public class OutboxCommitProcessor(OutboxDbContext outboxDbContext)
     }
 
     /// <summary>
-    /// Converts domain events from the specified <paramref name="dbContext"/> to outbox messages.
+    /// Converts domain events extracted from the specified <paramref name="dbContext"/> into outbox messages,
+    /// readying them for subsequent processing and delivery. This conversion includes serialization of the event data.
     /// </summary>
-    /// <param name="dbContext">The DbContext from which to extract domain events.</param>
+    /// <param name="dbContext">The DbContext from which to extract domain events for conversion.</param>
     private void ConvertDomainEventsToOutboxMessages(DbContext dbContext)
     {
         var entitiesWithEvents = dbContext.ChangeTracker.Entries<IDomainEventEmitter>()
@@ -55,7 +56,7 @@ public class OutboxCommitProcessor(OutboxDbContext outboxDbContext)
             .Select(domainEvent => new OutboxMessage
             {
                 Id = domainEvent.Id,
-                Type = domainEvent.GetType().Name,
+                EventType = domainEvent.GetType().Name,
                 Content = JsonConvert.SerializeObject(domainEvent, new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.All,

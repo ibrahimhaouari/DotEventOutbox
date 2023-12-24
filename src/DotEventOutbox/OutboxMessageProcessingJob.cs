@@ -12,13 +12,22 @@ using DotEventOutbox.Entities;
 
 namespace DotEventOutbox;
 
+
 /// <summary>
-/// Quartz job for processing messages stored in the outbox.
-/// This job handles the retrieval, deserialization, and publishing of domain events,
-/// as well as moving failed messages to a dead letter queue.
+/// A Quartz job designed for processing messages stored in the outbox.
+/// It's responsible for retrieving, deserializing, and publishing domain events,
+/// and handles moving failed messages to a dead letter queue for further analysis or reprocessing.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="OutboxMessageProcessingJob"/> class with necessary dependencies.
+/// </remarks>
+/// <param name="dbContext">The database context for the outbox, used for retrieving and updating messages.</param>
+/// <param name="publisher">The publisher for dispatching domain events.</param>
+/// <param name="options">Configuration options for the outbox.</param>
+/// <param name="logger">Logger for recording job execution details.</param>
+/// <exception cref="ArgumentNullException">Thrown if any argument is null.</exception>
 [DisallowConcurrentExecution]
-internal class OutboxMessageProcessingJob(
+internal sealed class OutboxMessageProcessingJob(
     OutboxDbContext dbContext,
     IPublisher publisher,
     IOptions<EventOutboxSettings> options,
@@ -29,6 +38,12 @@ internal class OutboxMessageProcessingJob(
     private readonly EventOutboxSettings configuration = options?.Value ?? throw new ArgumentNullException(nameof(options));
     private readonly ILogger<OutboxMessageProcessingJob> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
+    /// <summary>
+    /// Executes the job to process outbox messages. It involves deserializing and publishing each message,
+    /// applying retry policies, and handling failures by moving messages to the dead letter queue.
+    /// </summary>
+    /// <param name="context">The execution context for the job, providing runtime information.</param>
+    /// <returns>A task representing the asynchronous job execution.</returns>
     public async Task Execute(IJobExecutionContext context)
     {
         var messages = await dbContext.Set<OutboxMessage>()
@@ -72,11 +87,11 @@ internal class OutboxMessageProcessingJob(
                 var deadLetterMessage = new DeadLetterMessage
                 {
                     Id = message.Id,
-                    Type = message.Type,
+                    EventType = message.EventType,
                     Content = message.Content,
                     OccurredOnUtc = message.OccurredOnUtc,
                     Error = e.ToString(),
-                    Retries = configuration.MaxRetryAttempts,
+                    RetryCount = configuration.MaxRetryAttempts,
                     LastErrorOccurredOnUtc = DateTime.UtcNow,
                 };
 

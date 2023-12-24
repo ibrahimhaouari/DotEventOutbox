@@ -10,7 +10,7 @@ internal sealed class OutboxMessageConfigurations : IEntityTypeConfiguration<Out
         builder.ToTable("OutboxMessages");
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).ValueGeneratedNever();
-        builder.Property(e => e.Type).IsRequired().HasMaxLength(200);
+        builder.Property(e => e.EventType).IsRequired().HasMaxLength(200);
         builder.Property(e => e.Content).IsRequired();
         builder.Property(e => e.OccurredOnUtc).IsRequired();
 

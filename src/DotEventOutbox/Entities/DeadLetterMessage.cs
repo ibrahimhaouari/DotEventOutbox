@@ -1,44 +1,49 @@
 namespace DotEventOutbox.Entities;
 
 /// <summary>
-/// Represents a dead letter message in the outbox pattern.
-/// This entity is used to store information about messages that failed to process,
-/// allowing for later review and potential reprocessing.
+/// Represents a dead letter message within the outbox pattern framework.
+/// This entity is crucial for storing details about messages that have failed processing,
+/// enabling later analysis, troubleshooting, and potential reprocessing.
 /// </summary>
 public class DeadLetterMessage
 {
     /// <summary>
-    /// Gets or sets the unique identifier of the dead letter message.
+    /// Unique identifier for the dead letter message. This GUID facilitates individual tracking and management of failed messages.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Gets or sets the type of the dead letter message, typically representing the event or message type.
+    /// Type of the dead letter message, often reflecting the original event or message type.
+    /// This helps categorize the failure in the context of the message's intended purpose.
     /// </summary>
-    public string Type { get; set; } = string.Empty;
+    public string EventType { get; set; } = string.Empty;
+
 
     /// <summary>
-    /// Gets or sets the serialized content of the dead letter message.
+    /// Serialized content of the message. This may include the original event data, providing context for the failure.
     /// </summary>
     public string Content { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the date and time in UTC when the message was initially created or the event occurred.
+    /// Timestamp in UTC indicating when the original message was created or the corresponding event occurred.
+    /// This timestamp is essential for understanding the timeline of the message's lifecycle.
     /// </summary>
     public DateTime OccurredOnUtc { get; set; }
 
     /// <summary>
-    /// Gets or sets the error message or description associated with the processing failure of the message.
+    /// Error message or description detailing the cause of the processing failure.
+    /// This information is vital for diagnosing issues and planning reprocessing strategies.
     /// </summary>
     public string? Error { get; set; }
 
     /// <summary>
-    /// Gets or sets the number of attempts that have been made to process the message.
+    /// Number of retry attempts made to process the message. This count is useful for tracking retry efforts and determining processing strategies.
     /// </summary>
-    public int Retries { get; set; }
+    public int RetryCount { get; set; }
 
     /// <summary>
-    /// Gets or sets the date and time in UTC of the last error occurrence during message processing.
+    /// Timestamp in UTC of the last encountered error during processing.
+    /// This helps in identifying the most recent issue and assessing the message's processing history.
     /// </summary>
     public DateTime LastErrorOccurredOnUtc { get; set; }
 }

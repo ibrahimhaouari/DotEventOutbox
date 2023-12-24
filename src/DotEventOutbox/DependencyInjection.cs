@@ -11,7 +11,15 @@ namespace DotEventOutbox;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddOutbox(this IServiceCollection services,
+    /// <summary>
+    /// Adds and configures services required by DotEventOutbox to the specified IServiceCollection.
+    /// </summary>
+    /// <param name="services">The IServiceCollection to add services to.</param>
+    /// <param name="configuration">Configuration for the application.</param>
+    /// <param name="optionsAction">An action to configure the DbContextOptions for OutboxDbContext.</param>
+    /// <param name="schemaName">Optional schema name for database tables.</param>
+    /// <returns>The IServiceCollection for chaining.</returns>
+    public static IServiceCollection AddDotEventOutbox(this IServiceCollection services,
         IConfiguration configuration,
         Action<DbContextOptionsBuilder> optionsAction,
         string? schemaName = null)
@@ -53,10 +61,10 @@ public static class DependencyInjection
         return eventOutboxConfiguration;
     }
 
-    // Add DomainEventsToOutboxMessagesConverter to the services
+    // Add IOutboxCommitProcessor to the services
     private static IServiceCollection AddOutboxCommitProcessor(this IServiceCollection services)
     {
-        services.AddScoped<OutboxCommitProcessor>();
+        services.AddScoped<IOutboxCommitProcessor, OutboxCommitProcessor>();
         return services;
     }
 

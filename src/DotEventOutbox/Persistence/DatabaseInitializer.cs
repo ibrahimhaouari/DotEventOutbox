@@ -4,16 +4,18 @@ using Microsoft.Extensions.DependencyInjection;
 namespace DotEventOutbox.Persistence;
 
 /// <summary>
-/// Provides functionality to initialize the database used by the Outbox system,
-/// including applying any pending Entity Framework migrations.
+/// Provides essential functionality for initializing the database used by the Outbox system.
+/// This includes applying pending Entity Framework migrations to ensure the database structure
+/// is up-to-date and aligned with the current model definitions.
 /// </summary>
 public static class DatabaseInitializer
 {
     /// <summary>
-    /// Applies pending migrations to the Outbox database context.
+    /// Applies any pending migrations to the Outbox database context to ensure the database schema is current.
+    /// This method is typically called during application startup or deployment to align the database schema with the latest model changes.
     /// </summary>
-    /// <param name="serviceProvider">The service provider containing the OutboxDbContext.</param>
-    /// <exception cref="InvalidOperationException">Thrown if OutboxDbContext is not found.</exception>
+    /// <param name="serviceProvider">The service provider that holds services configured for the application, including the OutboxDbContext.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the OutboxDbContext cannot be resolved from the service provider, indicating a configuration issue.</exception>
     public static void ApplyMigrations(IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.CreateScope();

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DotEventOutbox.Persistence.Configurations;
-internal sealed class OutboxMessageConsumerConfigurations : IEntityTypeConfiguration<OutboxMessagesConsumer>
+internal sealed class OutboxMessageConsumerConfigurations : IEntityTypeConfiguration<OutboxMessageConsumer>
 {
-    public void Configure(EntityTypeBuilder<OutboxMessagesConsumer> builder)
+    public void Configure(EntityTypeBuilder<OutboxMessageConsumer> builder)
     {
         builder.ToTable("OutboxMessageConsumers");
         builder.HasKey(e => new { e.Id, e.Name });
