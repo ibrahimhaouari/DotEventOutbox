@@ -11,7 +11,7 @@ on:
 jobs:
   publish:
     name: Build, Test, Pack & Publish
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     env:
       PROJECT_PATH: src/DotEventOutbox/DotEventOutbox.csproj
@@ -28,15 +28,15 @@ jobs:
 
       # Restore dependencies
       - name: Restore Dependencies
-        run: dotnet restore
+        run: dotnet restore ${{ env.PROJECT_PATH }}
 
       # Build project
       - name: Build Project
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
 
       # Run tests
       - name: Run Tests
-        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-build --verbosity normal
+        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --verbosity normal
 
       # Package
       - name: Package
