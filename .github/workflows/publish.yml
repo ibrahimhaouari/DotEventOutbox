@@ -36,7 +36,7 @@ jobs:
 
       # Run tests
       - name: Run Tests
-        run: dotnet test ${{ env.TEST_PROJECT_PATH }} -c Release --no-build --verbosity normal
+        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-build --verbosity normal
 
       # Package
       - name: Package
