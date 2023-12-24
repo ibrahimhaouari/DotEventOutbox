@@ -15,7 +15,7 @@ jobs:
 
     env:
       PROJECT_PATH: src/DotEventOutbox/DotEventOutbox.csproj
-      TEST_PROJECT_PATH: tests/DotEventOutbox.Tests/DotEventOutbox.Tests.csproj # Path to the test project
+      TEST_PROJECT_PATH: tests/DotEventOutbox.Tests/DotEventOutbox.Tests.csproj
       ARTIFACTS_PATH: ./artifacts
 
     steps:
@@ -36,7 +36,7 @@ jobs:
 
       # Run tests
       - name: Run Tests
-        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --no-build --verbosity normal
+        run: dotnet test ${{ env.TEST_PROJECT_PATH }} -c Release --no-build --verbosity normal
 
       # Package
       - name: Package
