@@ -1,15 +1,28 @@
 # DotEventOutbox.Contracts
 
-## Overview
-
-`DotEventOutbox.Contracts` is part of the `DotEventOutbox` suite, a library designed for effective domain event handling in .NET applications using the Outbox Pattern. This project contains the core contracts and interfaces that define the fundamental behaviors and structures for domain event management.
+`DotEventOutbox.Contracts` is an integral part of the DotEventOutbox library, designed to aid in the implementation of the outbox pattern within .NET applications using MediatR and Entity Framework. It consists of essential interfaces and classes that define and manage domain events.
 
 ## Key Components
 
-- `IEvent`: Interface for domain events, extending MediatR's `INotification`.
-- `DomainEvent`: An abstract record providing a base implementation for domain events with a unique identifier and a timestamp.
-- `IDomainEventEmitter`: Interface defining the contract for an emitter of domain events, capable of tracking and managing domain events.
+### `IEvent` Interface
 
-## Usage
+- **Purpose**: Serves as the foundational interface for all domain events in your application.
+- **Features**:
+  - Inherits from `MediatR.INotification`, enabling compatibility with MediatR's messaging and handler patterns.
+  - Includes properties for a unique event identifier (`Id`) and the timestamp of the event's occurrence (`OccurredOnUtc`).
 
-To use these contracts in your application, implement these interfaces and abstract records according to your domain requirements.
+### `DomainEvent` Record
+
+- **Purpose**: Provides an abstract base record for domain events.
+- **Features**:
+  - Offers default implementations for the `IEvent` interface.
+  - Automatically generates a unique identifier (`Id`) and sets the occurrence timestamp to the current UTC time, simplifying domain event creation.
+
+### `IDomainEventEmitter` Interface
+
+- **Purpose**: Defines the contract for objects that can emit domain events.
+- **Features**:
+  - Contains a property to access a read-only collection of domain events (`Events`).
+  - Includes a method to clear these events (`ClearEvents`), facilitating event tracking and lifecycle management.
+
+These components collectively provide the foundation for effective domain event management in applications, ensuring consistency, idempotency, and seamless integration with MediatR and Entity Framework.
