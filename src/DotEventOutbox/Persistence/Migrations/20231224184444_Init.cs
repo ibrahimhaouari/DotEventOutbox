@@ -20,11 +20,11 @@ namespace DotEventOutbox.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Type = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    EventType = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
                     OccurredOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Error = table.Column<string>(type: "text", nullable: false),
-                    Retries = table.Column<int>(type: "integer", nullable: false),
+                    RetryCount = table.Column<int>(type: "integer", nullable: false),
                     LastErrorOccurredOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -51,7 +51,7 @@ namespace DotEventOutbox.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Type = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    EventType = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
                     OccurredOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ProcessedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -60,6 +60,12 @@ namespace DotEventOutbox.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_OutboxMessages", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OutboxMessages_ProcessedOnUtc",
+                schema: "Outbox",
+                table: "OutboxMessages",
+                column: "ProcessedOnUtc");
         }
 
         /// <inheritdoc />

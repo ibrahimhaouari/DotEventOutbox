@@ -23,7 +23,7 @@ var host = Host.CreateDefaultBuilder()
        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
        string schemaName = "Outbox";
-       services.AddOutbox(configuration,
+       services.AddDotEventOutbox(configuration,
         options => options.UseNpgsql(configuration.GetConnectionString("AppDb"),
                 o => o.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schemaName)),
                 schemaName);
@@ -45,7 +45,7 @@ var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Demo.com");
 dbContext.Users.Add(user);
 
 //Save changes with events
-var outboxCommitProcessor = scope.ServiceProvider.GetRequiredService<OutboxCommitProcessor>();
+var outboxCommitProcessor = scope.ServiceProvider.GetRequiredService<IOutboxCommitProcessor>();
 await outboxCommitProcessor.ProcessAndSaveAsync(dbContext);
 Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine("User created successfully.");
