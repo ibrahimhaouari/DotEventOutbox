@@ -6,54 +6,56 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using DotEventOutbox.Demo;
 using Microsoft.Extensions.DependencyInjection;
 
+// Create and configure the host
 var host = Host.CreateDefaultBuilder()
 .ConfigureServices(services =>
-   {
-       var configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .Build();
+{
+    // Build configuration from appsettings.json
+    var configuration = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .Build();
 
-       //Register DbContext
-       services.AddDbContext<AppDbContext>(options =>
-        {
-            options.UseNpgsql(configuration.GetConnectionString("AppDb"));
-        });
+    // Register the application's DbContext
+    services.AddDbContext<AppDbContext>(options =>
+    {
+        options.UseNpgsql(configuration.GetConnectionString("AppDb"));
+    });
 
-       //Register Event Handlers
-       services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+    // Register domain event handlers using MediatR
+    services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-       string schemaName = "Outbox";
-       services.AddDotEventOutbox(configuration,
+    // Schema name for the outbox tables
+    string schemaName = "Outbox";
+
+    // Register DotEventOutbox services with the specified schema name for outbox tables
+    services.AddDotEventOutbox(configuration,
         options => options.UseNpgsql(configuration.GetConnectionString("AppDb"),
-                o => o.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schemaName)),
-                schemaName);
+            o => o.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schemaName)),
+            schemaName);
 
-   }).Build();
+}).Build();
 
-
-
-//Create scope
+// Create a scope for the services
 using var scope = host.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-//Migrate database
+// Migrate the database to apply any pending migrations
 await dbContext.Database.MigrateAsync();
 
-//Create User
+// Create a new user instance
 var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Demo.com");
-//Add user to DbContext
+
+// Add the new user to the DbContext
 dbContext.Users.Add(user);
 
-//Save changes with events
+// Save changes and process domain events using OutboxCommitProcessor
 var outboxCommitProcessor = scope.ServiceProvider.GetRequiredService<IOutboxCommitProcessor>();
 await outboxCommitProcessor.ProcessAndSaveAsync(dbContext);
+
+// Confirmation message after successful operation
 Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine("User created successfully.");
 Console.ResetColor();
 
-//Run host
+// Run the host
 await host.RunAsync();
-
-
-
-

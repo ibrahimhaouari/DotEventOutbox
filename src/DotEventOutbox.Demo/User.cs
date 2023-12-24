@@ -4,6 +4,9 @@ using MediatR;
 
 namespace DotEventOutbox.Demo;
 
+/// <summary>
+/// Represents a user entity capable of emitting domain events.
+/// </summary>
 public class User : IDomainEventEmitter
 {
     public Guid Id { get; set; }
@@ -14,6 +17,9 @@ public class User : IDomainEventEmitter
     [NotMapped]
     public IReadOnlyCollection<DomainEvent> Events => _events.AsReadOnly();
 
+    /// <summary>
+    /// Creates a new user and raises a UserCreatedDomainEvent.
+    /// </summary>
     public User(Guid id, string name, string email)
     {
         Id = id;
@@ -29,8 +35,14 @@ public class User : IDomainEventEmitter
     }
 }
 
+/// <summary>
+/// Domain event that is raised when a new user is created.
+/// </summary>
 public record UserCreatedDomainEvent(string Name, string Email) : DomainEvent;
 
+/// <summary>
+/// Handles the UserCreatedDomainEvent by simulating an email send operation.
+/// </summary>
 public class UserCreatedSendEmailHandler : INotificationHandler<UserCreatedDomainEvent>
 {
     private readonly Random _random = new();
@@ -38,6 +50,7 @@ public class UserCreatedSendEmailHandler : INotificationHandler<UserCreatedDomai
     {
         Console.WriteLine($"Trying to send email to {notification.Email}...");
 
+        // Randomly simulate success or failure in sending email
         if (_random.Next(2) == 0)
         {
             Console.ForegroundColor = ConsoleColor.Red;

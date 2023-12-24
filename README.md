@@ -25,12 +25,12 @@ Install-Package DotEventOutbox
 
 ### Configuration
 
-Configure the library in your application's startup by calling `AddOutbox`:
+Configure the library in your application's startup by calling `AddDotEventOutbox`:
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-services.AddOutbox(Configuration, options =>
+services.AddDotEventOutbox(Configuration, options =>
 {
 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
 });
