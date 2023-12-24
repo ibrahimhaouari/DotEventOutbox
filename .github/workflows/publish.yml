@@ -1,40 +1,47 @@
-name: publish to nuget
+name: Publish to NuGet
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main # Default release branch
+    paths:
+      - "src/DotEventOutbox/**"
 
 jobs:
   publish:
-    name: build, pack & publish
+    name: Build, Test, Pack & Publish
     runs-on: ubuntu-latest
 
     env:
       PROJECT_PATH: src/DotEventOutbox/DotEventOutbox.csproj
+      TEST_PROJECT_PATH: src/DotEventOutbox.Tests/DotEventOutbox.Tests.csproj # Path to the test project
       ARTIFACTS_PATH: ./artifacts
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup dotnet
+      - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: "8.0.100"
+          dotnet-version: "8.0.100" # Use the specific .NET version your project targets
 
-      # Restore dependencies and build project
-      - name: Restore and Build
-        run: |
-          dotnet restore ${{ env.PROJECT_PATH }}
-          dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+      # Restore dependencies
+      - name: Restore Dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
 
-      # Run tests if any
+      # Build project
+      - name: Build Project
+        run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
+
+      # Run tests
+      - name: Run Tests
+        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --no-build --verbosity normal
 
       # Package
       - name: Package
         run: dotnet pack ${{ env.PROJECT_PATH }} --no-build -o ${{ env.ARTIFACTS_PATH }}
 
-      # Publish
-      - name: Publish
+      # Publish to NuGet
+      - name: Publish to NuGet
         run: dotnet nuget push ${{ env.ARTIFACTS_PATH }}/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
