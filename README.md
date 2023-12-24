@@ -1,61 +1,63 @@
-# DotEventOutbox Library
+# DotEventOutbox
 
 ## Overview
 
-`DotEventOutbox` is a .NET library designed to facilitate robust and efficient handling of domain events using the Outbox Pattern. It provides a suite of tools and services to ensure reliable and scalable event processing, particularly in distributed systems or microservices architectures.
+DotEventOutbox is a .NET library designed to streamline the implementation of the outbox pattern with MediatR and Entity Framework. It provides a robust mechanism to manage domain events, ensuring their consistency, reliability, and idempotent processing.
 
 ## Features
 
-- **Domain Event Handling**: Define and handle domain events in your application.
-- **Outbox Pattern Implementation**: Reliably handle event dispatch to ensure consistency and fault tolerance.
-- **Idempotent Processing**: Ensure each event is processed only once.
-- **Configurable and Extendable**: Tailor the library to fit the specific needs of your application.
+- **Integration with MediatR and Entity Framework**: Seamless interaction with these frameworks.
+- **Idempotent Event Processing**: Guarantees that each event is processed only once.
+- **Automated Outbox Message Handling**: Converts domain events into outbox messages and manages their lifecycle.
+- **Dead Letter Handling**: Moves failed messages to a dead-letter queue for later analysis or reprocessing.
+- **Quartz Integration**: Schedules and automates the processing of outbox messages.
+- **Configurable**: Offers customization options via `EventOutboxSettings`.
 
 ## Getting Started
 
 ### Installation
 
-You can install the `DotEventOutbox` library via NuGet package manager. Run the following command:
+To install DotEventOutbox, use the following NuGet command:
 
-```bash
-dotnet add package DotEventOutbox
+```
+Install-Package DotEventOutbox
 ```
 
-### Basic Setup
+### Configuration
 
-1. **Configure Services**: Add `DotEventOutbox` to your service collection in the `Startup.cs` or wherever you configure services.
+Configure the library in your application's startup by calling `AddOutbox`:
 
-   ```csharp
-   string schemaName = "Outbox";
-        services.AddOutbox(configuration,
-        options => options.UseNpgsql(configuration.GetConnectionString("AppDb"),
-                o => o.MigrationsHistoryTable(HistoryRepository.DefaultTableName, schemaName)),
-                schemaName);
-   ```
-
-2. **Applying Migrations**: Apply migrations to set up the necessary database tables.
-   - For development, you can apply migrations automatically during application startup.
-   - For production, it's recommended to apply migrations manually or as part of your CI/CD pipeline.
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+services.AddOutbox(Configuration, options =>
+{
+options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+});
+}
+```
 
 ### Usage
 
-- Define domain events implementing `IEvent`.
-- Implement `IDomainEventEmitter` in your entities.
-- Use `OutboxMessageProcessingJob` for processing and dispatching events.
+Simply raise domain events in your application. The library handles the rest, ensuring that these events are processed and managed effectively.
 
-## Advanced Configuration
+## Documentation
 
-- Customize the `OutboxMessage` entity configurations as needed.
-- Configure Quartz jobs for event processing schedules.
+### Key Components
+
+- `IEvent`: Interface for domain events.
+- `OutboxCommitProcessor`: Processes and saves domain events as outbox messages.
+- `OutboxMessageProcessingJob`: Quartz job for processing outbox messages.
+- `IdempotencyDomainEventHandlerDecorator`: Ensures idempotent processing of domain events.
+
+### Entity Framework Configurations
+
+Entity configurations for `OutboxMessage`, `OutboxMessageConsumer`, and `DeadLetterMessage` are provided to manage the underlying database schema effectively.
 
 ## Contributing
 
-Contributions are welcome! If you have a feature request, bug report, or pull request, please open an issue or submit a pull request.
+Contributions are welcome! Please read our contributing guidelines for more information.
 
 ## License
 
 This project is licensed under the [MIT License](LICENSE.md).
-
-## Acknowledgements
-
-Special thanks to the contributors and users of `DotEventOutbox`. Your feedback and support are greatly appreciated!
