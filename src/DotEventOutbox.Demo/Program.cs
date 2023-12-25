@@ -4,6 +4,7 @@ using DotEventOutbox;
 using Microsoft.EntityFrameworkCore;
 using DotEventOutbox.Demo;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 // Create and configure the host
 var host = Host.CreateDefaultBuilder()
@@ -13,6 +14,9 @@ var host = Host.CreateDefaultBuilder()
     var configuration = new ConfigurationBuilder()
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
         .Build();
+
+    // configure logging
+    services.AddLogging(builder => builder.AddConfiguration(configuration.GetSection("Logging")));
 
     // Register the application's DbContext
     services.AddDbContext<AppDbContext>(options =>
@@ -33,6 +37,9 @@ var host = Host.CreateDefaultBuilder()
 // Create a scope for the services
 using var scope = host.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+// Ensure the database is created and up-to-date
+await dbContext.Database.EnsureCreatedAsync();
 
 // Create a new user instance
 var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Demo.com");

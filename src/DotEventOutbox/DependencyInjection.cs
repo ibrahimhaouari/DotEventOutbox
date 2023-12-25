@@ -39,6 +39,11 @@ public static class DependencyInjection
                 // Decorate INotificationHandler
                 .DecorateNotificationHandlers();
 
+        // Ensure the database is created and up-to-date
+        using var scope = services.BuildServiceProvider().CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<OutboxDbContext>();
+        dbContext.Database.EnsureCreated();
+
         return services;
     }
 
