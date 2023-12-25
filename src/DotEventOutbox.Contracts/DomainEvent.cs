@@ -18,14 +18,12 @@ public abstract record DomainEvent : IEvent
     /// </summary>
     public DateTime OccurredOnUtc { get; init; }
 
-    // Constructor for deserialization
     protected DomainEvent(Guid id, DateTime occurredOnUtc)
     {
         Id = id;
         OccurredOnUtc = occurredOnUtc;
     }
 
-    // Default constructor
     protected DomainEvent()
         : this(Guid.NewGuid(), DateTime.UtcNow)
     {
