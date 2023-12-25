@@ -15,7 +15,8 @@ jobs:
 
     env:
       PROJECT_PATH: src/DotEventOutbox/DotEventOutbox.csproj
-      UNIT_TEST_PROJECT_PATH: tests/DotEventOutbox.Tests/DotEventOutbox.UnitTests.csproj
+      UNIT_TEST_PROJECT_PATH: tests/DotEventOutbox.UnitTests.csproj
+      INTEGRATION_TEST_PROJECT_PATH: tests/DotEventOutbox.IntegrationTests.csproj
       ARTIFACTS_PATH: ./artifacts
 
     steps:
@@ -34,9 +35,13 @@ jobs:
       - name: Build Project
         run: dotnet build ${{ env.PROJECT_PATH }} --no-restore --configuration Release
 
-      # Run tests
-      - name: Run Tests
+      # Run unit tests
+      - name: Run Unit Tests
         run: dotnet test ${{ env.UNIT_TEST_PROJECT_PATH }} --configuration Release --verbosity normal
+
+      # Run integration tests
+      - name: Run Integration Tests
+        run: dotnet test ${{ env.INTEGRATION_TEST_PROJECT_PATH }} --configuration Release --verbosity normal
 
       # Package
       - name: Package
