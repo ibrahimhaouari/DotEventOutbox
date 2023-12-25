@@ -15,8 +15,8 @@ jobs:
 
     env:
       PROJECT_PATH: src/DotEventOutbox/DotEventOutbox.csproj
-      UNIT_TEST_PROJECT_PATH: tests/DotEventOutbox.UnitTests.csproj
-      INTEGRATION_TEST_PROJECT_PATH: tests/DotEventOutbox.IntegrationTests.csproj
+      UNIT_TEST_PROJECT_PATH: tests/DotEventOutbox.UnitTests/DotEventOutbox.UnitTests.csproj
+      INTEGRATION_TEST_PROJECT_PATH: tests/DotEventOutbox.IntegrationTests/DotEventOutbox.IntegrationTests.csproj
       ARTIFACTS_PATH: ./artifacts
 
     steps:
