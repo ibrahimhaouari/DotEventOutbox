@@ -1,7 +1,7 @@
 using DotEventOutbox.Contracts;
 using Newtonsoft.Json.Linq;
 
-namespace DotEventOutbox.Tests;
+namespace DotEventOutbox.UnitTests;
 
 public class DomainEventJsonConverterTests
 {

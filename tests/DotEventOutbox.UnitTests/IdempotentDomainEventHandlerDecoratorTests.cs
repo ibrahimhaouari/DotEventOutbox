@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace DotEventOutbox.Tests;
+namespace DotEventOutbox.UnitTests;
 
 public class IdempotentDomainEventHandlerDecoratorTests
 {

@@ -12,7 +12,7 @@ using Moq;
 using Newtonsoft.Json;
 using Quartz;
 
-namespace DotEventOutbox.Tests;
+namespace DotEventOutbox.UnitTests;
 
 public class OutboxMessageProcessingJobTests
 {

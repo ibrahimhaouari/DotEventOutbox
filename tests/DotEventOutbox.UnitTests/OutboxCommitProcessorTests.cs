@@ -4,7 +4,7 @@ using DotEventOutbox.Entities;
 using DotEventOutbox.Contracts;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DotEventOutbox.Tests;
+namespace DotEventOutbox.UnitTests;
 
 public class OutboxCommitProcessorTests
 {
