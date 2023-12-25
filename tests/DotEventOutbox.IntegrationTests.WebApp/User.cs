@@ -26,7 +26,12 @@ public class User : IDomainEventEmitter
         Name = name;
         Email = email;
 
-        _events.Add(new UserCreatedDomainEvent(name, email));
+
+    }
+
+    public void Raise(DomainEvent domainEvent)
+    {
+        _events.Add(domainEvent);
     }
 
     public void ClearEvents()

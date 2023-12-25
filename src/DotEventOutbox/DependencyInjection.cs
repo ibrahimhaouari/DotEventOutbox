@@ -39,9 +39,6 @@ public static class DependencyInjection
                 // Decorate INotificationHandler
                 .DecorateNotificationHandlers();
 
-        // apply migrations
-        DatabaseInitializer.ApplyMigrations(services.BuildServiceProvider());
-
         return services;
     }
 

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DotEventOutbox.Persistence;
 
@@ -25,7 +26,7 @@ internal sealed class OutboxDbContext(DbContextOptions<OutboxDbContext> options)
     /// This method applies entity configurations and sets the default database schema if one is specified.
     /// </summary>
     /// <param name="modelBuilder">The builder being used to construct the model for this context.</param>
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override async void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
@@ -37,5 +38,8 @@ internal sealed class OutboxDbContext(DbContextOptions<OutboxDbContext> options)
         {
             modelBuilder.HasDefaultSchema(SchemaName);
         }
+
+        //Apply migrations
+        await Database.MigrateAsync();
     }
 }

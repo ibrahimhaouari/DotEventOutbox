@@ -1,18 +1,15 @@
 using DotEventOutbox.IntegrationTests.WebApp;
+using DotEventOutbox.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DotEventOutbox.IntegrationTests;
 
-public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestsWebAppFactory>
+public abstract class BaseIntegrationTest(IntegrationTestsWebAppFactory factory) : IClassFixture<IntegrationTestsWebAppFactory>
 {
-    protected readonly IServiceScope scope;
-    protected readonly AppDbContext dbContext;
-    protected readonly IOutboxCommitProcessor outboxCommitProcessor;
+    private readonly IServiceScope scope = factory.Services.CreateScope();
 
-    protected BaseIntegrationTest(IntegrationTestsWebAppFactory factory)
+    protected T GetService<T>() where T : notnull
     {
-        scope = factory.Services.CreateScope();
-        dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        outboxCommitProcessor = scope.ServiceProvider.GetRequiredService<IOutboxCommitProcessor>();
+        return scope.ServiceProvider.GetRequiredService<T>();
     }
 }
