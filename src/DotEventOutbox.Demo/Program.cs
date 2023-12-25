@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using DotEventOutbox;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using DotEventOutbox.Demo;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,9 +33,6 @@ var host = Host.CreateDefaultBuilder()
 // Create a scope for the services
 using var scope = host.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-// Migrate the database to apply any pending migrations
-await dbContext.Database.MigrateAsync();
 
 // Create a new user instance
 var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Demo.com");

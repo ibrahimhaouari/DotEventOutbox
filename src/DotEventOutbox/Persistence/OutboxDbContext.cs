@@ -18,7 +18,7 @@ internal sealed class OutboxDbContext(DbContextOptions<OutboxDbContext> options)
     /// Optionally specifies a default schema name for the Outbox tables in the database.
     /// When set, this schema name is applied to all tables managed by this DbContext.
     /// </summary>
-    public static string? SchemaName { get; set; }
+    public static string SchemaName { get; set; } = "outbox";
 
     /// <summary>
     /// Configures the model building for the outbox-related entities.

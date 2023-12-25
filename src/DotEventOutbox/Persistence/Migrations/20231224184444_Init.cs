@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -12,11 +11,11 @@ namespace DotEventOutbox.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "Outbox");
+                name: OutboxDbContext.SchemaName);
 
             migrationBuilder.CreateTable(
                 name: "DeadLetterMessages",
-                schema: "Outbox",
+                schema: OutboxDbContext.SchemaName,
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -34,7 +33,7 @@ namespace DotEventOutbox.Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OutboxMessageConsumers",
-                schema: "Outbox",
+                schema: OutboxDbContext.SchemaName,
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -47,7 +46,7 @@ namespace DotEventOutbox.Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OutboxMessages",
-                schema: "Outbox",
+                schema: OutboxDbContext.SchemaName,
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -63,7 +62,7 @@ namespace DotEventOutbox.Persistence.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_OutboxMessages_ProcessedOnUtc",
-                schema: "Outbox",
+                schema: OutboxDbContext.SchemaName,
                 table: "OutboxMessages",
                 column: "ProcessedOnUtc");
         }
@@ -73,15 +72,15 @@ namespace DotEventOutbox.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "DeadLetterMessages",
-                schema: "Outbox");
+                schema: OutboxDbContext.SchemaName);
 
             migrationBuilder.DropTable(
                 name: "OutboxMessageConsumers",
-                schema: "Outbox");
+                schema: OutboxDbContext.SchemaName);
 
             migrationBuilder.DropTable(
                 name: "OutboxMessages",
-                schema: "Outbox");
+                schema: OutboxDbContext.SchemaName);
         }
     }
 }

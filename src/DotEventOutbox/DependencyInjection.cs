@@ -22,7 +22,7 @@ public static class DependencyInjection
     public static IServiceCollection AddDotEventOutbox(this IServiceCollection services,
         IConfiguration configuration,
         Action<DbContextOptionsBuilder> optionsAction,
-        string? schemaName = null)
+        string schemaName = "outbox")
     {
         // Configure Outbox settings and get the instance of the settings
         var outboxSettings = services.ConfigureOutboxSettings(configuration);
