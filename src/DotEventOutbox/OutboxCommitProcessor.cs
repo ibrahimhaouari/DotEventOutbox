@@ -57,11 +57,7 @@ internal sealed class OutboxCommitProcessor(OutboxDbContext outboxDbContext) : I
             {
                 Id = domainEvent.Id,
                 EventType = domainEvent.GetType().Name,
-                Content = JsonConvert.SerializeObject(domainEvent, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All,
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                }),
+                Content = DomainEventJsonConverter.Serialize(domainEvent),
                 OccurredOnUtc = domainEvent.OccurredOnUtc,
             })
             .ToList();

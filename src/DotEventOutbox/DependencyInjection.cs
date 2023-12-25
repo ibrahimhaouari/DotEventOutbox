@@ -93,7 +93,7 @@ public static class DependencyInjection
     // Decorate INotificationHandler with IdempotentDomainEventHandler
     private static IServiceCollection DecorateNotificationHandlers(this IServiceCollection services)
     {
-        services.TryDecorate(typeof(INotificationHandler<>), typeof(IdempotencyDomainEventHandlerDecorator<>));
+        services.TryDecorate(typeof(INotificationHandler<>), typeof(IdempotentDomainEventHandlerDecorator<>));
         return services;
     }
 }

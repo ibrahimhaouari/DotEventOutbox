@@ -16,19 +16,19 @@ namespace DotEventOutbox;
 /// </summary>
 /// <typeparam name="TDomainEvent">The type of the domain event being handled.</typeparam>
 /// <remarks>
-/// Initializes a new instance of the <see cref="IdempotencyDomainEventHandlerDecorator{TDomainEvent}"/> class.
+/// Initializes a new instance of the <see cref="IdempotentDomainEventHandlerDecorator{TDomainEvent}"/> class.
 /// </remarks>
 /// <param name="decorated">The actual event handler to be invoked if the event is not a duplicate.</param>
 /// <param name="scopeFactory">The factory to create scopes for obtaining services.</param>
 /// <param name="logger">Logger for recording execution details.</param>
-internal sealed class IdempotencyDomainEventHandlerDecorator<TDomainEvent>(
+internal sealed class IdempotentDomainEventHandlerDecorator<TDomainEvent>(
     INotificationHandler<TDomainEvent> decorated,
     IServiceScopeFactory scopeFactory,
-    ILogger<IdempotencyDomainEventHandlerDecorator<TDomainEvent>> logger) : INotificationHandler<TDomainEvent> where TDomainEvent : IEvent
+    ILogger<IdempotentDomainEventHandlerDecorator<TDomainEvent>> logger) : INotificationHandler<TDomainEvent> where TDomainEvent : IEvent
 {
     private readonly INotificationHandler<TDomainEvent> decorated = decorated;
     private readonly IServiceScopeFactory scopeFactory = scopeFactory;
-    private readonly ILogger<IdempotencyDomainEventHandlerDecorator<TDomainEvent>> logger = logger;
+    private readonly ILogger<IdempotentDomainEventHandlerDecorator<TDomainEvent>> logger = logger;
 
     /// <summary>
     /// Handles the specified domain event ensuring idempotency. It checks for the event's prior processing

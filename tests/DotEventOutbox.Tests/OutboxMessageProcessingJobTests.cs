@@ -103,6 +103,7 @@ public class OutboxMessageProcessingJobTests
         // Verify that the message is moved to the dead letter queue
         var deadLetterMessage = await outboxDbContext.Set<DeadLetterMessage>().FindAsync(message.Id);
         Assert.NotNull(deadLetterMessage);
+        Assert.Equal(message.Id, deadLetterMessage.Id);
         Assert.Equal(exception.ToString(), deadLetterMessage.Error);
         Assert.Equal(3, deadLetterMessage.RetryCount); // Assuming MaxRetryAttempts is set to 3 in EventOutboxSettings
     }

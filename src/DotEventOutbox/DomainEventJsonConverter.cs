@@ -15,9 +15,9 @@ internal static class DomainEventJsonConverter
         });
     }
 
-    public static DomainEvent? Deserialize(string json)
+    public static TEvent? Deserialize<TEvent>(string json) where TEvent : DomainEvent
     {
-        var domainEvent = JsonConvert.DeserializeObject<DomainEvent>(json, new JsonSerializerSettings
+        var domainEvent = JsonConvert.DeserializeObject<TEvent>(json, new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.All,
         });

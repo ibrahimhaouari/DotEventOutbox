@@ -22,11 +22,12 @@
 
   <ItemGroup>
     <None Include="../../assets/icon.png" Pack="true" Visible="false" PackagePath="" />
-    <None Include="../../README.md" Pack="true" PackagePath=""/>
+    <None Include="../../README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotEventOutbox.Contracts" Version="1.0.0" />
+    <!-- <PackageReference Include="DotEventOutbox.Contracts" Version="1.0.0" /> -->
+    <ProjectReference Include="..\DotEventOutbox.Contracts\DotEventOutbox.Contracts.csproj" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.0" />

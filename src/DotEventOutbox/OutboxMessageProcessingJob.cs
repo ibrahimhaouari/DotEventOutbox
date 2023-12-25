@@ -59,10 +59,8 @@ internal sealed class OutboxMessageProcessingJob(
             {
                 logger.LogInformation("Processing outbox message with ID {Id}.", message.Id);
 
-                var @event = JsonConvert.DeserializeObject<IEvent>(message.Content, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All,
-                }) ?? throw new InvalidOperationException("Deserialized event is null.");
+                var @event = DomainEventJsonConverter.Deserialize<DomainEvent>(message.Content)
+                ?? throw new InvalidOperationException("Deserialized event is null.");
 
                 var retryPolicy = Policy.Handle<Exception>()
                     .WaitAndRetryAsync(configuration.MaxRetryAttempts, retryAttempt =>
