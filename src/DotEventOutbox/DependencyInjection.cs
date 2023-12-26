@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Quartz;
 
@@ -38,11 +39,6 @@ public static class DependencyInjection
                 .ConfigureQuartz(outboxSettings)
                 // Decorate INotificationHandler
                 .DecorateNotificationHandlers();
-
-        // Ensure the database is created and up-to-date
-        using var scope = services.BuildServiceProvider().CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<OutboxDbContext>();
-        dbContext.Database.EnsureCreated();
 
         return services;
     }
@@ -98,4 +94,14 @@ public static class DependencyInjection
         services.TryDecorate(typeof(INotificationHandler<>), typeof(IdempotentDomainEventHandlerDecorator<>));
         return services;
     }
+
+
+    public static async Task MigrateDotEventOutbox(this IHost host)
+    {
+        // Ensure the database is created and up-to-date
+        using var scope = host.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<OutboxDbContext>();
+        await dbContext.Database.MigrateAsync();
+    }
+
 }

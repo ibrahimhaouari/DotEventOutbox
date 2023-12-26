@@ -8,6 +8,7 @@ using DotEventOutbox.Persistence;
 using Testcontainers.PostgreSql;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Quartz;
 
 namespace DotEventOutbox.IntegrationTests;
 public class IntegrationTestsWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
@@ -44,6 +45,13 @@ public class IntegrationTestsWebAppFactory : WebApplicationFactory<Program>, IAs
                         , OutboxDbContext.SchemaName);
                 });
             });
+
+            // Change Quartz configuration
+            if (services.SingleOrDefault(s => s.ImplementationType == typeof(QuartzHostedService)) is { } descriptor)
+            {
+                services.Remove(descriptor);
+                services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
+            }
         });
     }
 

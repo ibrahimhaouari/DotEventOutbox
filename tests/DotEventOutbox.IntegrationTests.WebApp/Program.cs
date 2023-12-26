@@ -20,6 +20,13 @@ builder.Services.AddDotEventOutbox(builder.Configuration,
 
 var app = builder.Build();
 
+await app.MigrateDotEventOutbox();
+
+// Ensure the database is created and up-to-date
+using var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+await dbContext.Database.MigrateAsync();
+
 app.Run();
 
 public partial class Program;
