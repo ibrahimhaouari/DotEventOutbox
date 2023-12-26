@@ -8,11 +8,11 @@
 
   <PropertyGroup>
     <PackageId>DotEventOutbox</PackageId>
-    <Version>1.0.5</Version>
+    <Version>1.1.0</Version>
     <Authors>Ibrahim Haouari</Authors>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>Outbox,DDD,MediatR,Events</PackageTags>
-    <Description>A concise .NET library for seamless integration of the outbox pattern with MediatR and Entity Framework, ensuring reliable and idempotent domain event processing.</Description>
+    <Description>DotEventOutbox is a powerful .NET library created to enhance the implementation of the outbox pattern, integrating seamlessly with MediatR and Entity Framework. This library is key in ensuring that domain events are processed in a reliable, consistent, and idempotent manner.</Description>
     <PackageProjectUrl>https://github.com/ibrahimhaouari/DotEventOutbox</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
