@@ -34,12 +34,12 @@ var host = Host.CreateDefaultBuilder()
 
 }).Build();
 
+await host.MigrateDotEventOutbox();
+
 // Create a scope for the services
 using var scope = host.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-// Ensure the database is created and up-to-date
-await dbContext.Database.EnsureCreatedAsync();
+await dbContext.Database.MigrateAsync();
 
 // Create a new user instance
 var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Demo.com");

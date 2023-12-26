@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Quartz;
 
 namespace DotEventOutbox.IntegrationTests;
+
 public class IntegrationTestsWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()

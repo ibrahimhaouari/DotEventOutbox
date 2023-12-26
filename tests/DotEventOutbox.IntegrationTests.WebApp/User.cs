@@ -53,20 +53,20 @@ public class UserCreatedSendEmailHandler : INotificationHandler<UserCreatedDomai
     private readonly Random _random = new();
     public Task Handle(UserCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"Trying to send email to {notification.Email}...");
-
-        // Randomly simulate success or failure in sending email
-        if (_random.Next(2) == 0)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Failed to send email to {notification.Email}.", ConsoleColor.Red);
-            Console.ResetColor();
-            throw new Exception("Failed to send email");
-        }
-
-        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"Email sent to {notification.Email}.", ConsoleColor.Green);
         Console.ResetColor();
         return Task.CompletedTask;
+    }
+}
+
+public class UserCreatedSendEmailFailedHandler : INotificationHandler<UserCreatedDomainEvent>
+{
+    private readonly Random _random = new();
+    public Task Handle(UserCreatedDomainEvent notification, CancellationToken cancellationToken)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Failed to send email to {notification.Email}.", ConsoleColor.Red);
+        Console.ResetColor();
+        throw new Exception("Failed to send email");
     }
 }

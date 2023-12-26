@@ -1,50 +1,66 @@
 using DotEventOutbox.Entities;
 using DotEventOutbox.IntegrationTests.WebApp;
 using DotEventOutbox.Persistence;
+using DotEventOutbox.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Quartz;
 
 namespace DotEventOutbox.IntegrationTests;
 
-public class OutboxCommitProcessorTests(IntegrationTestsWebAppFactory factory) : BaseIntegrationTest(factory)
+public class EventOutboxIntegrationTests(IntegrationTestsWebAppFactory factory) : BaseIntegrationTest(factory)
 {
+
     [Fact]
-    public async Task ProcessAndSaveAsync_ShouldSaveChangesToDatabase()
+    // Test that the decorator does not handle the same domain event twice
+    public async Task EventProcessing_ShouldMoveToDeadLetterAndSaveOneConsumer_WhenSecondConsumerFails()
     {
         // Arrange
         var dbContext = GetService<AppDbContext>();
-        var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Test.com");
-        dbContext.Users.Add(user);
-        var outboxCommitProcessor = GetService<IOutboxCommitProcessor>();
-
-        // Act
-        await outboxCommitProcessor.ProcessAndSaveAsync(dbContext);
-
-        // Assert
-        var savedUser = await dbContext.Users.FindAsync(user.Id);
-        Assert.NotNull(savedUser);
-        Assert.Equal(user.Id, savedUser.Id);
-    }
-
-    [Fact]
-    public async Task ProcessAndSaveAsync_ShouldSaveDomainEventToDatabase()
-    {
-        // Arrange
-        var dbContext = GetService<AppDbContext>();
+        var outboxDbContext = GetService<OutboxDbContext>();
         var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Test.com");
         var domainEvent = new UserCreatedDomainEvent(user.Name, user.Email);
         user.Raise(domainEvent);
         dbContext.Users.Add(user);
         var outboxCommitProcessor = GetService<IOutboxCommitProcessor>();
-        var outboxDbContext = GetService<OutboxDbContext>();
+        var settings = GetService<IOptions<EventOutboxSettings>>().Value;
+
 
         // Act
         await outboxCommitProcessor.ProcessAndSaveAsync(dbContext);
+        // wait for the job to process the outbox
+        await Task.Delay(settings.ProcessingIntervalInSeconds * 1000);
+        await Task.Delay(settings.RetryIntervalInMilliseconds * 3);
 
         // Assert
-        var outboxMessage = await outboxDbContext.Set<OutboxMessage>().FindAsync(domainEvent.Id);
-        Assert.NotNull(outboxMessage);
-        Assert.Equal(domainEvent.OccurredOnUtc, outboxMessage.OccurredOnUtc);
-        Assert.Equal(domainEvent, DomainEventJsonConverter.Deserialize<UserCreatedDomainEvent>(outboxMessage.Content));
+        var outboxMessage = await outboxDbContext.Set<OutboxMessage>().FirstOrDefaultAsync(m => m.Id == domainEvent.Id);
+        Assert.Null(outboxMessage);
+
+        var consumers = await outboxDbContext.Set<OutboxMessageConsumer>().Where(c => c.Id == domainEvent.Id).ToListAsync();
+        Assert.NotEmpty(consumers);
+        Assert.Single(consumers);
+        Assert.Equal(typeof(UserCreatedSendEmailHandler).FullName, consumers[0].Name);
+
+        var deadLetterMessage = await outboxDbContext.Set<DeadLetterMessage>().FirstOrDefaultAsync(m => m.Id == domainEvent.Id);
+        Assert.NotNull(deadLetterMessage);
+        Assert.Equal(domainEvent.Id, deadLetterMessage.Id);
+        Assert.Equal(deadLetterMessage.RetryCount, settings.MaxRetryAttempts);
+    }
+
+    [Fact]
+    public async Task OutboxMessageProcessingJob_ShouldBeConfiguredCorrectly()
+    {
+        // Arrange
+        var jobKey = JobKey.Create(nameof(OutboxMessageProcessingJob));
+        var schedulers = await GetService<ISchedulerFactory>().GetAllSchedulers();
+        var scheduler = schedulers.FirstOrDefault();
+        var job = scheduler != null ? await scheduler.GetJobDetail(jobKey) : null;
+
+        // Assert
+        Assert.NotNull(scheduler);
+        Assert.NotNull(job);
+        Assert.True(scheduler.IsStarted);
+        Assert.True(job.ConcurrentExecutionDisallowed);
     }
 
     [Fact]
@@ -76,7 +92,7 @@ public class OutboxCommitProcessorTests(IntegrationTestsWebAppFactory factory) :
     }
 
     [Fact]
-    public async Task ProcessAndSaveAsync_ShouldRollbackIfOutboxMessageFails()
+    public async Task ProcessAndSaveAsync_ShouldRollbackIfOutboxMessagesSaveFails()
     {
         // Arrange
         var dbContext = GetService<AppDbContext>();
@@ -108,7 +124,4 @@ public class OutboxCommitProcessorTests(IntegrationTestsWebAppFactory factory) :
         .FirstOrDefaultAsync(x => x.Id == user.Id);
         Assert.Null(savedUser);
     }
-
-
-
 }
