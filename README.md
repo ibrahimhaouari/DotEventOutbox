@@ -2,65 +2,74 @@
 
 ## Overview
 
-DotEventOutbox is a .NET library designed to streamline the implementation of the outbox pattern with MediatR and Entity Framework. It ensures reliable, consistent, and idempotent processing of domain events.
+DotEventOutbox is a powerful .NET library created to enhance the implementation of the outbox pattern, integrating seamlessly with MediatR and Entity Framework. This library is key in ensuring that domain events are processed in a reliable, consistent, and idempotent manner.
 
-## Features
+## Key Features
 
-- **MediatR and Entity Framework Integration**: Seamless interaction for managing and dispatching domain events.
-- **Idempotent Processing**: Ensures each event is processed only once, avoiding duplicate handling.
-- **Automated Outbox Message Management**: Handles conversion and lifecycle of domain events as outbox messages.
-- **Dead Letter Queue**: Manages failed messages for later analysis or reprocessing.
-- **Quartz Integration**: Automates and schedules outbox message processing.
-- **Configurable Settings**: Customizable behavior through `EventOutboxSettings`.
+- **Seamless Integration with MediatR and Entity Framework**: DotEventOutbox provides an effortless and smooth integration for managing and dispatching domain events using MediatR and Entity Framework.
+- **Idempotent Processing**: Guarantees that each event is processed exactly once, thereby preventing any possibility of duplicate event handling.
+- **Advanced Outbox Message Management**: Automates the conversion, storage, and lifecycle management of domain events into outbox messages.
+- **Robust Dead Letter Queue**: Implements a system to manage failed messages, allowing for their later analysis or reprocessing.
+- **Quartz Integration**: Provides an automated and scheduled approach to outbox message processing using Quartz.
+- **Configurable Settings**: Offers a wide range of customizable settings through `EventOutboxSettings` to tailor the outbox behavior to your specific needs.
 
-## Installing DotEventOutbox
+## Installation
 
-You should install [DotEventOutbox with NuGet](https://www.nuget.org/packages/DotEventOutbox):
+Install DotEventOutbox via NuGet:
 
 ```bash
 Install-Package DotEventOutbox
 ```
 
-Or via the .NET Core command line interface:
+Or through the .NET Core CLI:
 
 ```bash
 dotnet add package DotEventOutbox
 ```
 
-Either commands, from Package Manager Console or .NET Core CLI, will download and install DotEventOutbox and all required dependencies.
+Both commands will download and install DotEventOutbox along with all necessary dependencies.
 
-## Using Contracts-Only Package
+## Contracts-Only Package
 
-To reference only the contracts for DotEventOutbox, which includes:
+For projects needing only the contracts of DotEventOutbox, such as `IEvent`, `DomainEvent`, and `IDomainEventEmitter`, use the DotEventOutbox.Contracts package:
 
-- `IEvent`
-- `DomainEvent`
-- `IDomainEventEmitter`
+```bash
+dotnet add package DotEventOutbox.Contracts
+```
 
-Add a package reference to [DotEventOutbox.Contracts](https://www.nuget.org/packages/DotEventOutbox.Contracts)
+This is ideal for separating DotEventOutbox contracts from their handlers in different assemblies or projects.
 
-This package is useful in scenarios where your DotEventOutbox contracts are in a separate assembly/project from handlers.
+## Service Registration
 
-## Registering with `IServiceCollection`
-
-DotEventOutbox supports `Microsoft.Extensions.DependencyInjection.Abstractions` directly. To register various DotEventOutbox services:
+Register DotEventOutbox services easily with `IServiceCollection`:
 
 ```csharp
 services.AddDotEventOutbox(configuration,
   options => options.UseNpgsql(configuration.GetConnectionString("AppDb")));
 ```
 
-## Configuration
+## Database Migration
 
-Detail the available settings in `DotEventOutbox` and their impact:
+Create necessary tables by executing:
 
-- **ProcessingIntervalInSeconds**: Defines the frequency of outbox processing cycles.
-- **MaxMessagesProcessedPerBatch**: Limits the number of messages processed in a single batch to optimize performance.
-- **RetryIntervalInMilliseconds**: Specifies the delay between retry attempts for failed message processing.
-- **MaxRetryAttempts**: Sets the maximum number of retries for each message before moving it to the dead-letter queue.
+```csharp
+await app.MigrateDotEventOutbox();
+```
+
+This will create `OutboxMessages`, `OutboxMessageConsumers`, and `DeadLetterMessages` tables.
+
+## Configuration Details
+
+Customize DotEventOutbox using these settings:
+
+- **ProcessingIntervalInSeconds**: Time interval for processing outbox messages.
+- **MaxMessagesProcessedPerBatch**: Maximum number of messages processed per batch.
+- **RetryIntervalInMilliseconds**: Time delay between retry attempts for failed messages.
+- **MaxRetryAttempts**: Maximum retry attempts before moving a message to the dead-letter queue.
+
+Example `appsettings.json`:
 
 ```json
-// appsettings.json
 {
   "ConnectionStrings": {
     "AppDb": "Your-Database-Connection-String"
@@ -76,20 +85,30 @@ Detail the available settings in `DotEventOutbox` and their impact:
 
 ## Example Usage
 
-Below is an example demonstrating how to use DotEventOutbox in a console application:
+Here's a basic example in a console application:
 
 ```csharp
 // Program.cs
+// Create a new user instance
 var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Demo.com");
+
+// Raise the UserCreatedDomainEvent
+user.RaiseEvent(new UserCreatedDomainEvent(user.Name, user.Email));
+
+// Add the new user to the DbContext
 dbContext.Users.Add(user);
+
+// Save changes and process domain events using OutboxCommitProcessor
 var outboxCommitProcessor = scope.ServiceProvider.GetRequiredService<IOutboxCommitProcessor>();
 await outboxCommitProcessor.ProcessAndSaveAsync(dbContext);
 ```
 
+For a comprehensive example, visit the [Demo Repository](https://github.com/ibrahimhaouari/DotEventOutbox/tree/main/src/DotEventOutbox.Demo).
+
 ## Contributing
 
-We welcome contributions and suggestions! Please read through our contributing guidelines for more information on how to get started.
+Contributions and suggestions are highly appreciated. Please review our [Contributing Guidelines](CONTRIBUTING.md) for detailed information on how to participate.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE.md).
+DotEventOutbox is open-sourced under the [MIT License](LICENSE.md).

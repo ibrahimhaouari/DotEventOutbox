@@ -29,7 +29,7 @@ public class User : IDomainEventEmitter
 
     }
 
-    public void Raise(DomainEvent domainEvent)
+    public void RaiseEvent(DomainEvent domainEvent)
     {
         _events.Add(domainEvent);
     }

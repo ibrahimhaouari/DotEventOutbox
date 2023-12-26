@@ -44,6 +44,9 @@ await dbContext.Database.MigrateAsync();
 // Create a new user instance
 var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Demo.com");
 
+// Raise the UserCreatedDomainEvent
+user.RaiseEvent(new UserCreatedDomainEvent(user.Name, user.Email));
+
 // Add the new user to the DbContext
 dbContext.Users.Add(user);
 

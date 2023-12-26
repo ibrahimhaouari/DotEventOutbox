@@ -20,7 +20,7 @@ public class EventOutboxIntegrationTests(IntegrationTestsWebAppFactory factory) 
         var outboxDbContext = GetService<OutboxDbContext>();
         var user = new User(Guid.NewGuid(), "John Doe", "John.Doe@Test.com");
         var domainEvent = new UserCreatedDomainEvent(user.Name, user.Email);
-        user.Raise(domainEvent);
+        user.RaiseEvent(domainEvent);
         dbContext.Users.Add(user);
         var outboxCommitProcessor = GetService<IOutboxCommitProcessor>();
         var settings = GetService<IOptions<EventOutboxSettings>>().Value;
@@ -74,7 +74,7 @@ public class EventOutboxIntegrationTests(IntegrationTestsWebAppFactory factory) 
         dbContext.ChangeTracker.Clear();
 
         var domainEvent = new UserCreatedDomainEvent(user.Name, user.Email);
-        user.Raise(domainEvent);
+        user.RaiseEvent(domainEvent);
         dbContext.Users.Add(user);
         var outboxCommitProcessor = GetService<IOutboxCommitProcessor>();
         var outboxDbContext = GetService<OutboxDbContext>();
@@ -109,7 +109,7 @@ public class EventOutboxIntegrationTests(IntegrationTestsWebAppFactory factory) 
         outboxDbContext.SaveChanges();
         outboxDbContext.ChangeTracker.Clear();
 
-        user.Raise(domainEvent);
+        user.RaiseEvent(domainEvent);
         dbContext.Users.Add(user);
         var outboxCommitProcessor = GetService<IOutboxCommitProcessor>();
 
