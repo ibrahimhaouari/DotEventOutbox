@@ -2,13 +2,13 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Polly;
 using Quartz;
 using DotEventOutbox.Contracts;
 using DotEventOutbox.Persistence;
 using DotEventOutbox.Settings;
 using DotEventOutbox.Entities;
+using System.Diagnostics;
 
 namespace DotEventOutbox;
 
@@ -52,6 +52,9 @@ internal sealed class OutboxMessageProcessingJob(
             .OrderBy(m => m.OccurredOnUtc)
             .Take(configuration.MaxMessagesProcessedPerBatch)
             .ToListAsync(context.CancellationToken);
+
+        // Add messages count tag to the current activity for distributed tracing
+        Activity.Current?.AddTag("messages.count", messages.Count);
 
         foreach (var message in messages)
         {
