@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
 using DotEventOutbox.Contracts;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace DotEventOutbox.Demo;
 
@@ -46,25 +48,23 @@ public record UserCreatedDomainEvent(string Name, string Email) : DomainEvent;
 /// <summary>
 /// Handles the UserCreatedDomainEvent by simulating an email send operation.
 /// </summary>
-public class UserCreatedSendEmailHandler : INotificationHandler<UserCreatedDomainEvent>
+public class UserCreatedSendEmailHandler(ILogger<UserCreatedSendEmailHandler> logger)
+ : INotificationHandler<UserCreatedDomainEvent>
 {
+    private readonly ILogger<UserCreatedSendEmailHandler> logger = logger;
     private readonly Random _random = new();
     public Task Handle(UserCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"Trying to send email to {notification.Email}...");
+        logger.LogInformation("Trying to send email to {Email}...", notification.Email);
 
         // Randomly simulate success or failure in sending email
         if (_random.Next(2) == 0)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Failed to send email to {notification.Email}.", ConsoleColor.Red);
-            Console.ResetColor();
+            logger.LogError("Failed to send email to {Email}.", notification.Email);
             throw new Exception("Failed to send email");
         }
 
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Email sent to {notification.Email}.", ConsoleColor.Green);
-        Console.ResetColor();
+        logger.LogInformation("Email sent to {Email}.", notification.Email);
         return Task.CompletedTask;
     }
 }
