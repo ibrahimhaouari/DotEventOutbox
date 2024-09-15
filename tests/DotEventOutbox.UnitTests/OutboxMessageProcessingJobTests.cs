@@ -55,7 +55,9 @@ public class OutboxMessageProcessingJobTests
         await outboxDbContext.SaveChangesAsync();
 
         // Act: Execute the job with a mock IJobExecutionContext
-        await job.Execute(new Mock<IJobExecutionContext>().Object);
+        var jobExecutionContextMock = new Mock<IJobExecutionContext>();
+        jobExecutionContextMock.SetupGet(j => j.JobDetail.Key).Returns(new JobKey("OutboxMessageProcessingJob"));
+        await job.Execute(jobExecutionContextMock.Object);
 
         // Assert: Verify that the Publish method was called and the message's ProcessedOnUtc is set
         publisherMock.Verify(p => p.Publish(It.IsAny<INotification>(), default), Times.Once);
@@ -97,7 +99,9 @@ public class OutboxMessageProcessingJobTests
         await outboxDbContext.SaveChangesAsync();
 
         // Act
-        await job.Execute(new Mock<IJobExecutionContext>().Object);
+        var jobExecutionContextMock = new Mock<IJobExecutionContext>();
+        jobExecutionContextMock.SetupGet(j => j.JobDetail.Key).Returns(new JobKey("OutboxMessageProcessingJob"));
+        await job.Execute(jobExecutionContextMock.Object);
 
         // Assert
         // Verify that the message is moved to the dead letter queue

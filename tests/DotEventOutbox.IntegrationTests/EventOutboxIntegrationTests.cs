@@ -5,6 +5,7 @@ using DotEventOutbox.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Quartz;
+using Quartz.Impl.Matchers;
 
 namespace DotEventOutbox.IntegrationTests;
 
@@ -51,10 +52,11 @@ public class EventOutboxIntegrationTests(IntegrationTestsWebAppFactory factory) 
     public async Task OutboxMessageProcessingJob_ShouldBeConfiguredCorrectly()
     {
         // Arrange
-        var jobKey = JobKey.Create(nameof(OutboxMessageProcessingJob));
         var schedulers = await GetService<ISchedulerFactory>().GetAllSchedulers();
         var scheduler = schedulers.FirstOrDefault();
-        var job = scheduler != null ? await scheduler.GetJobDetail(jobKey) : null;
+        // Get job key that starts with the job name
+        var jobKey = scheduler?.GetJobKeys(GroupMatcher<JobKey>.GroupEquals("OutboxMessageProcessingJob")).Result.FirstOrDefault();
+        var job = scheduler == null || jobKey == null ? null : await scheduler.GetJobDetail(jobKey);
 
         // Assert
         Assert.NotNull(scheduler);

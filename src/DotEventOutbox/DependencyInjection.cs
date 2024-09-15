@@ -71,7 +71,7 @@ public static class DependencyInjection
     {
         services.AddQuartz(config =>
         {
-            var jobKey = JobKey.Create($"OutboxMessageProcessingJob-{Guid.NewGuid()}");
+            var jobKey = JobKey.Create($"OutboxMessageProcessingJob-{Guid.NewGuid()}", "OutboxMessageProcessingJob");
             config.AddJob<OutboxMessageProcessingJob>(jobKey)
             .AddTrigger(trigger => trigger
                 .ForJob(jobKey)
