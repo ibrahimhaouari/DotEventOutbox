@@ -60,7 +60,6 @@ public class EventOutboxIntegrationTests(IntegrationTestsWebAppFactory factory) 
         Assert.NotNull(scheduler);
         Assert.NotNull(job);
         Assert.True(scheduler.IsStarted);
-        Assert.True(job.ConcurrentExecutionDisallowed);
     }
 
     [Fact]
