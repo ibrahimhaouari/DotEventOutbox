@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>DotEventOutbox</PackageId>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <Authors>Ibrahim Haouari</Authors>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>Outbox,DDD,MediatR,Events</PackageTags>

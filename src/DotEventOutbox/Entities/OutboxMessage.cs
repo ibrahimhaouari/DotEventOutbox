@@ -31,6 +31,12 @@ public class OutboxMessage
     public DateTime OccurredOnUtc { get; set; }
 
     /// <summary>
+    /// This helps keep track of whether the message is currently being processed or is pending processing.
+    /// It is useful in preventing concurrent processing of the same message when multiple consumers are involved.
+    /// </summary>
+    public bool IsProcessing { get; set; } = false;
+
+    /// <summary>
     /// Timestamp in UTC marking when the message was processed. A null value indicates that the message is pending processing.
     /// This helps in tracking the processing status of messages in the outbox.
     /// </summary>

@@ -53,18 +53,17 @@ public class UserCreatedSendEmailHandler(ILogger<UserCreatedSendEmailHandler> lo
 {
     private readonly ILogger<UserCreatedSendEmailHandler> logger = logger;
     private readonly Random _random = new();
-    public Task Handle(UserCreatedDomainEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(UserCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
         logger.LogInformation("Trying to send email to {Email}...", notification.Email);
 
-        // Randomly simulate success or failure in sending email
+        //Randomly simulate success or failure in sending email
         if (_random.Next(2) == 0)
         {
             logger.LogError("Failed to send email to {Email}.", notification.Email);
             throw new Exception("Failed to send email");
         }
-
+        await Task.Delay(100, cancellationToken);
         logger.LogInformation("Email sent to {Email}.", notification.Email);
-        return Task.CompletedTask;
     }
 }

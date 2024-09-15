@@ -9,6 +9,7 @@ using DotEventOutbox.Persistence;
 using DotEventOutbox.Settings;
 using DotEventOutbox.Entities;
 using System.Diagnostics;
+using System.Transactions;
 
 namespace DotEventOutbox;
 
@@ -26,7 +27,7 @@ namespace DotEventOutbox;
 /// <param name="options">Configuration options for the outbox.</param>
 /// <param name="logger">Logger for recording job execution details.</param>
 /// <exception cref="ArgumentNullException">Thrown if any argument is null.</exception>
-[DisallowConcurrentExecution]
+// [DisallowConcurrentExecution]
 internal sealed class OutboxMessageProcessingJob(
     OutboxDbContext dbContext,
     IPublisher publisher,
@@ -46,21 +47,54 @@ internal sealed class OutboxMessageProcessingJob(
     /// <returns>A task representing the asynchronous job execution.</returns>
     public async Task Execute(IJobExecutionContext context)
     {
+        // Add transaction scope to ensure atomicity of getting messages and marking them as processing to prevent concurrent processing
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
         var messages = await dbContext.Set<OutboxMessage>()
             .TagWith("GetPendingOutboxMessages")
-            .Where(m => m.ProcessedOnUtc == null)
+            .Where(m => m.ProcessedOnUtc == null && !m.IsProcessing)
             .OrderBy(m => m.OccurredOnUtc)
             .Take(configuration.MaxMessagesProcessedPerBatch)
             .ToListAsync(context.CancellationToken);
 
+        if (messages.Count == 0)
+        {
+            logger.LogInformation("Job {key}: No outbox messages to process.", context.JobDetail.Key);
+            return;
+        }
+
+        var count = messages.Count;
+
+        // Mark messages as processing to prevent concurrent processing
+        try
+        {
+            // Set messages as processing to prevent concurrent processing
+            logger.LogInformation("Job {key}: Marking {count} outbox messages as processing.", context.JobDetail.Key, count);
+            foreach (var message in messages)
+            {
+                message.IsProcessing = true;
+            }
+            // Step 3: Save changes and detect concurrency conflicts
+
+            await dbContext.SaveChangesAsync(context.CancellationToken);
+            transaction.Complete();
+            transaction.Dispose();
+        }
+        catch
+        {
+            logger.LogError("Job {key}: Failed to start processing outbox messages.", context.JobDetail.Key);
+            return;
+        }
+
+        logger.LogInformation("Job {key}: started processing {count} outbox messages at {time}.", context.JobDetail.Key, count, DateTime.UtcNow);
         // Add messages count tag to the current activity for distributed tracing
-        Activity.Current?.AddTag("messages.count", messages.Count);
+        Activity.Current?.AddTag("messages.count", count);
 
         foreach (var message in messages)
         {
             try
             {
-                logger.LogInformation("Processing outbox message with ID {Id}.", message.Id);
+                logger.LogInformation("Job {key}: Processing outbox message with ID {Id}.", context.JobDetail.Key, message.Id);
 
                 var @event = DomainEventJsonConverter.Deserialize<DomainEvent>(message.Content)
                 ?? throw new InvalidOperationException("Deserialized event is null.");
@@ -77,13 +111,14 @@ internal sealed class OutboxMessageProcessingJob(
                     throw result.FinalException;
                 }
 
-                logger.LogInformation("Outbox message with ID {Id} processed successfully.", message.Id);
+                logger.LogInformation("Job {key}: Outbox message with ID {Id} processed successfully.", context.JobDetail.Key, message.Id);
 
+                message.IsProcessing = false;
                 message.ProcessedOnUtc = DateTime.UtcNow;
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Failed to process outbox message with ID {Id}.", message.Id);
+                logger.LogError(e, "Job {key}: Failed to process outbox message with ID {Id}.", context.JobDetail.Key, message.Id);
 
                 var deadLetterMessage = new DeadLetterMessage
                 {
@@ -102,5 +137,6 @@ internal sealed class OutboxMessageProcessingJob(
         }
 
         await dbContext.SaveChangesAsync(context.CancellationToken);
+
     }
 }

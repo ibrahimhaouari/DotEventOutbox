@@ -71,7 +71,7 @@ public static class DependencyInjection
     {
         services.AddQuartz(config =>
         {
-            var jobKey = JobKey.Create(nameof(OutboxMessageProcessingJob));
+            var jobKey = JobKey.Create($"OutboxMessageProcessingJob-{Guid.NewGuid()}");
             config.AddJob<OutboxMessageProcessingJob>(jobKey)
             .AddTrigger(trigger => trigger
                 .ForJob(jobKey)
@@ -79,7 +79,6 @@ public static class DependencyInjection
                     .WithIntervalInSeconds(configuration.ProcessingIntervalInSeconds)
                     .RepeatForever()
                 ));
-
         });
         services.AddQuartzHostedService(
             q => q.WaitForJobsToComplete = true
