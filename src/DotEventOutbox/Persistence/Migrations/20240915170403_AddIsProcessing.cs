@@ -12,7 +12,7 @@ namespace DotEventOutbox.Persistence.Migrations
         {
             migrationBuilder.AddColumn<bool>(
                 name: "IsProcessing",
-                schema: "outbox",
+                schema: OutboxDbContext.SchemaName,
                 table: "OutboxMessages",
                 type: "boolean",
                 nullable: false,
@@ -24,7 +24,7 @@ namespace DotEventOutbox.Persistence.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "IsProcessing",
-                schema: "outbox",
+                schema: OutboxDbContext.SchemaName,
                 table: "OutboxMessages");
         }
     }

@@ -16,7 +16,7 @@ namespace DotEventOutbox.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("outbox")
+                .HasDefaultSchema(OutboxDbContext.SchemaName)
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -50,7 +50,7 @@ namespace DotEventOutbox.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeadLetterMessages", "outbox");
+                    b.ToTable("DeadLetterMessages", OutboxDbContext.SchemaName);
                 });
 
             modelBuilder.Entity("DotEventOutbox.Entities.OutboxMessage", b =>
@@ -80,7 +80,7 @@ namespace DotEventOutbox.Persistence.Migrations
 
                     b.HasIndex("ProcessedOnUtc");
 
-                    b.ToTable("OutboxMessages", "outbox");
+                    b.ToTable("OutboxMessages", OutboxDbContext.SchemaName);
                 });
 
             modelBuilder.Entity("DotEventOutbox.Entities.OutboxMessageConsumer", b =>
@@ -94,7 +94,7 @@ namespace DotEventOutbox.Persistence.Migrations
 
                     b.HasKey("Id", "Name");
 
-                    b.ToTable("OutboxMessageConsumers", "outbox");
+                    b.ToTable("OutboxMessageConsumers", OutboxDbContext.SchemaName);
                 });
 #pragma warning restore 612, 618
         }
