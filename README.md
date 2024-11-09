@@ -2,7 +2,7 @@
 
 ## Overview
 
-DotEventOutbox is a powerful .NET library created to enhance the implementation of the outbox pattern, integrating seamlessly with MediatR and Entity Framework. This library is key in ensuring that domain events are processed in a reliable, consistent, and idempotent manner.
+DotEventOutbox is a .NET library created to enhance the implementation of the outbox pattern, integrating seamlessly with MediatR and Entity Framework. This library is key in ensuring that domain events are processed in a reliable, consistent, and idempotent manner.
 
 ## Key Features
 
