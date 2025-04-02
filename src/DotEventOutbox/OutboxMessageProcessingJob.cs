@@ -27,7 +27,7 @@ namespace DotEventOutbox;
 /// <param name="options">Configuration options for the outbox.</param>
 /// <param name="logger">Logger for recording job execution details.</param>
 /// <exception cref="ArgumentNullException">Thrown if any argument is null.</exception>
-// [DisallowConcurrentExecution]
+[DisallowConcurrentExecution]
 internal sealed class OutboxMessageProcessingJob(
     OutboxDbContext dbContext,
     IPublisher publisher,
